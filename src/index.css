@@ -1,0 +1,338 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&family=Cinzel:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=El+Messiri:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #F3FAF9 0%, #E2F0EE 50%, #D1E5E2 100%) !important; /* Soft pale minty white gradient */
+  color: #1D2E28; /* text-ink */
+  margin: 0;
+  padding: 0;
+  transition: all 0.3s ease;
+  min-height: 100vh;
+}
+
+.dark body {
+  background: linear-gradient(135deg, #030A0A 0%, #061615 50%, #0A2220 100%) !important; /* Deep forest teal dark gradient */
+  color: #E2ECEB !important;
+}
+
+/* Theme-adaptive Typography overrides */
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, 
+.dark .text-ink, .dark .logo-font {
+  color: #F5FAFA !important;
+}
+
+.dark h1 .text-gold {
+  color: #0B5D56 !important;
+}
+
+.dark p, .dark span, .dark label, .dark td, .dark th {
+  color: #E2ECEB;
+}
+
+.dark .text-muted, .dark p.text-muted, .dark span.text-muted {
+  color: #94A3B8 !important;
+}
+
+h1, h2, h3, h4, h5, h6, .logo-font {
+  font-family: 'Libre Baskerville', serif;
+}
+
+/* Advanced Glassmorphism style cards matching xost.pro */
+.flat-card {
+  background: rgba(244, 250, 249, 0.65) !important; /* Soft pale minty white translucent glass */
+  border: 1px solid rgba(11, 93, 86, 0.12) !important;
+  border-radius: 1.5rem !important; /* rounded-3xl */
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  box-shadow: 0 8px 32px 0 rgba(11, 93, 86, 0.03), inset 0 0 0 1px rgba(255, 255, 255, 0.6) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .flat-card {
+  background: rgba(5, 17, 16, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+.flat-card:hover {
+  border-color: rgba(11, 93, 86, 0.4) !important;
+  box-shadow: 0 12px 40px rgba(11, 93, 86, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-4px);
+}
+
+.dark .flat-card:hover {
+  border-color: rgba(11, 93, 86, 0.3) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Scrollbar styles matching the ink and aqua design */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #D8ECEB;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #051110;
+}
+::-webkit-scrollbar-thumb {
+  background: #0B5D56;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #064842;
+}
+
+/* Scrollbar hiding helper */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Input fields and buttons default min height and padding for mobile */
+input, select, textarea {
+  min-height: 44px;
+}
+
+button.cta-btn, a.cta-btn {
+  width: 100%;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h1, h2, h3, h4, h5, h6, .logo-font {
+  font-family: 'Outfit', 'Libre Baskerville', serif;
+}
+
+@font-face {
+  font-family: 'ink brush arabic_demo';
+  src: url('https://db.onlinewebfonts.com/t/de8614dffad7204e910f1ee12f3dafe6.woff2') format('woff2'),
+       url('https://db.onlinewebfonts.com/t/de8614dffad7204e910f1ee12f3dafe6.woff') format('woff'),
+       url('https://db.onlinewebfonts.com/t/de8614dffad7204e910f1ee12f3dafe6.ttf') format('truetype');
+  font-display: swap;
+}
+
+.logo-font-urdu {
+  font-family: 'El Messiri', 'Reem Kufi', 'Noto Nastaliq Urdu', sans-serif;
+  font-weight: 700;
+  -webkit-text-stroke: 0.4px rgba(29, 46, 40, 0.5);
+  paint-order: stroke fill;
+  color: #25A18E !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: #25A18E !important;
+}
+
+.font-elmessiri {
+  font-family: 'El Messiri', sans-serif !important;
+  font-weight: 700 !important;
+  color: #25A18E !important;
+}
+
+.font-tajawal {
+  font-family: 'Tajawal', sans-serif !important;
+  font-weight: 900 !important;
+  color: #25A18E !important;
+}
+
+/* Premium Glassmorphism panel for light mode */
+.glass-panel {
+  background: rgba(244, 250, 249, 0.75) !important; /* Soft pale minty white translucent glass */
+  backdrop-filter: blur(25px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(190%) !important;
+  border: 1px solid rgba(11, 93, 86, 0.15) !important;
+  box-shadow: 0 8px 32px 0 rgba(11, 93, 86, 0.04), inset 0 0 0 1px rgba(255, 255, 255, 0.6) !important;
+}
+
+.dark .glass-panel {
+  background: rgba(5, 17, 16, 0.65) !important;
+  backdrop-filter: blur(25px) saturate(185%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(185%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Dyslexia font override */
+.dyslexia-active, .dyslexia-active * {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+}
+
+/* Reading guide helper line */
+.reading-guide-active::after {
+  content: '';
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(11, 93, 86, 0.6);
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 8px rgba(11, 93, 86, 0.8);
+  top: var(--guide-top, 50%);
+}
+
+/* High Contrast overrides */
+.contrast-active {
+  filter: contrast(1.4) saturate(1.2) !important;
+}
+
+.dark.contrast-active,
+.dark.contrast-active body {
+  background: #000000 !important;
+  color: #FFFFFF !important;
+}
+
+.dark.contrast-active .flat-card,
+.dark.contrast-active .glass-panel,
+.dark.contrast-active header,
+.dark.contrast-active nav,
+.dark.contrast-active footer,
+.dark.contrast-active input,
+.dark.contrast-active select,
+.dark.contrast-active button {
+  background-color: #000000 !important;
+  background-image: none !important;
+  border: 2px solid #FFFFFF !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+}
+
+.dark.contrast-active h1,
+.dark.contrast-active h2,
+.dark.contrast-active h3,
+.dark.contrast-active h4,
+.dark.contrast-active h5,
+.dark.contrast-active h6,
+.dark.contrast-active p,
+.dark.contrast-active span,
+.dark.contrast-active label,
+.dark.contrast-active a {
+  color: #FFFFFF !important;
+}
+
+.monochrome-active {
+  filter: grayscale(1) !important;
+}
+.invert-active {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* Link highlighting */
+.highlight-links-active a {
+  text-decoration: underline !important;
+  font-weight: 850 !important;
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  outline: 2px solid #000000 !important;
+}
+.dark .highlight-links-active a {
+  background-color: #ff00ff !important;
+  color: #ffffff !important;
+  outline: 2px solid #ffffff !important;
+}
+
+/* Large Cursor override */
+.large-cursor-active, .large-cursor-active * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath fill='%230B5D56' stroke='%23000' stroke-width='2' d='M0,0 L0,24 L6,18 L13,30 L17,28 L10,16 L18,16 Z'/%3E%3C/svg%3E"), auto !important;
+}
+
+/* Pause Animations override */
+.pause-animations-active *,
+.pause-animations-active *::before,
+.pause-animations-active *::after {
+  animation-delay: -1ms !important;
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0s !important;
+  scroll-behavior: auto !important;
+}
+
+/* Extended Letter/Word Spacing */
+.text-spacing-active, .text-spacing-active * {
+  letter-spacing: 0.08em !important;
+  word-spacing: 0.14em !important;
+  line-height: 1.75 !important;
+}
+
+/* Continuous Marquee Tickers */
+@keyframes marquee-ltr {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes marquee-rtl {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee-ltr {
+  display: flex;
+  width: max-content;
+  animation: marquee-ltr 80s linear infinite;
+}
+
+.animate-marquee-rtl {
+  display: flex;
+  width: max-content;
+  animation: marquee-rtl 80s linear infinite;
+}
+
+.animate-marquee-ltr:hover, .animate-marquee-rtl:hover {
+  animation-play-state: paused;
+}
+
+@font-face {
+  font-family: 'Kingsman';
+  src: url('/fonts/Kingsman Demo.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* Global Kingsman style overrides for major and important headings (excluding the customizable hero) */
+h1:not(.hero-heading), h2:not(.hero-heading), .font-kingsman {
+  font-family: 'Kingsman', 'Kingsmen', 'Cinzel', 'Playfair Display', 'Libre Baskerville', serif !important;
+  letter-spacing: 0.04em;
+}
+
+@font-face {
+  font-family: 'Gamilia';
+  src: url('/fonts/Gamilia-Regular.otf') format('opentype');
+  font-display: swap;
+}
+
+/* Gamilia font for landing page hero text */
+.font-gamilia {
+  font-family: 'Gamilia', 'Cinzel', 'Playfair Display', serif !important;
+  font-weight: normal !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em;
+}
+
+@font-face {
+  font-family: 'Mileast';
+  src: url('/fonts/Mileast.otf') format('opentype');
+  font-display: swap;
+}
+
+.font-mileast {
+  font-family: 'Mileast', 'Cinzel', 'Playfair Display', serif !important;
+  font-weight: normal !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em;
+}
+
+/* Thin custom dark border outline for Urdu hero word */
+.urdu-hero-stroke {
+  -webkit-text-stroke: 1.5px #1D2E28;
+  text-shadow: 0 2px 4px rgba(29, 46, 40, 0.15);
+}
