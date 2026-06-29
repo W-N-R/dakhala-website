@@ -98,7 +98,27 @@ export default function PastMerits() {
       ? activePrograms 
       : activePrograms.filter(p => p.name === selectedProgram);
 
-    const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+    const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+
+    const handleSaveMerit = (progName, year, val) => {
+      const campusMeritData = uni.meritData?.campuses?.[selectedCampus];
+      if (campusMeritData && Object.keys(campusMeritData).length > 0) {
+        const newMeritData = JSON.parse(JSON.stringify(uni.meritData));
+        if (!newMeritData.campuses[selectedCampus][progName]) {
+          newMeritData.campuses[selectedCampus][progName] = {};
+        }
+        newMeritData.campuses[selectedCampus][progName][year] = val === '' ? null : Number(val);
+        updateUniversity(uni.id, { meritData: newMeritData });
+      } else {
+        const newPrograms = JSON.parse(JSON.stringify(uni.programs || []));
+        const progIndex = newPrograms.findIndex(p => p.name === progName);
+        if (progIndex !== -1) {
+          if (!newPrograms[progIndex].merits) newPrograms[progIndex].merits = {};
+          newPrograms[progIndex].merits[year] = val === '' ? null : Number(val);
+          updateUniversity(uni.id, { programs: newPrograms });
+        }
+      }
+    };
 
     // Prepare chart data for the selected program (or the first one if "All" is selected)
     const chartProgram = (selectedProgram === 'All' || !activePrograms.some(p => p.name === selectedProgram))
@@ -281,14 +301,18 @@ export default function PastMerits() {
                           <td className="block md:hidden">
                             <div className="grid grid-cols-4 gap-2">
                               {years.map(year => (
-                                merits7[year] ? (
-                                  <div key={year} className="flex flex-col gap-1 bg-gray-50/80 dark:bg-white/[0.02] border border-border dark:border-white/5 p-2 rounded-lg items-center">
-                                    <span className="text-[9px] font-bold text-muted dark:text-gray-500 uppercase">{year}</span>
-                                    <span className="bg-white dark:bg-gray-800 text-ink dark:text-cloudy px-2 py-0.5 rounded-md font-bold border border-border dark:border-white/10 shadow-sm text-[11px]">
-                                      {uni.meritData?.type === 'rank' ? `#${merits7[year]}` : `${merits7[year]}%`}
-                                    </span>
-                                  </div>
-                                ) : null
+                                <div key={year} className="flex flex-col gap-1 bg-gray-50/80 dark:bg-white/[0.02] border border-border dark:border-white/5 p-2 rounded-lg items-center">
+                                  <span className="text-[9px] font-bold text-muted dark:text-gray-500 uppercase">{year}</span>
+                                  <span className="bg-white dark:bg-gray-800 text-ink dark:text-cloudy px-2 py-0.5 rounded-md font-bold border border-border dark:border-white/10 shadow-sm text-[11px] inline-flex items-center gap-0.5">
+                                    {uni.meritData?.type === 'rank' && merits7[year] && '#'}
+                                    <EditableBlock 
+                                      type="number"
+                                      value={merits7[year] || ''} 
+                                      onSave={(val) => handleSaveMerit(prog.name, year, val)} 
+                                    />
+                                    {uni.meritData?.type !== 'rank' && merits7[year] && '%'}
+                                  </span>
+                                </div>
                               ))}
                             </div>
                           </td>
@@ -296,11 +320,15 @@ export default function PastMerits() {
                           {/* Desktop View: Standard Table Cells */}
                           {years.map(year => (
                             <td key={year} className="hidden md:table-cell p-4 text-center text-muted dark:text-gray-400 font-semibold group-hover:text-ink dark:group-hover:text-white transition-colors">
-                              {merits7[year] ? (
-                                <span className="bg-cloudy dark:bg-gray-800 text-ink dark:text-cloudy px-2 py-1 rounded-md">
-                                  {uni.meritData?.type === 'rank' ? `#${merits7[year]}` : `${merits7[year]}%`}
-                                </span>
-                              ) : '-'}
+                              <span className="bg-cloudy dark:bg-gray-800 text-ink dark:text-cloudy px-2 py-1 rounded-md inline-flex items-center gap-0.5">
+                                {uni.meritData?.type === 'rank' && merits7[year] && '#'}
+                                <EditableBlock 
+                                  type="number"
+                                  value={merits7[year] || ''} 
+                                  onSave={(val) => handleSaveMerit(prog.name, year, val)} 
+                                />
+                                {uni.meritData?.type !== 'rank' && merits7[year] && '%'}
+                              </span>
                             </td>
                           ))}
                         </tr>
