@@ -18,12 +18,15 @@ export const useDataStore = create((set) => ({
       const unisSnap = await getDocs(collection(db, 'universities'));
       const datesSnap = await getDocs(collection(db, 'important_dates'));
       
-      let firestoreUnis = unisSnap.docs.map(doc => doc.data());
+      let firestoreUnis = unisSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       
-      // Merge: For each static university, if a firestore doc exists, use it, otherwise use static.
+      // Merge: For each static university, if a firestore doc exists, cleanly merge it over the static data.
       let unis = allStaticUniversities.map(staticUni => {
         const cloudUni = firestoreUnis.find(u => u.id === staticUni.id);
-        return cloudUni ? cloudUni : staticUni;
+        if (cloudUni) {
+          return { ...staticUni, ...cloudUni };
+        }
+        return staticUni;
       });
 
       // We use the Firestore document ID to allow deleting/editing
