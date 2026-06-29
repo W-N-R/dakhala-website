@@ -150,7 +150,7 @@ export default function Home() {
   };
 
   return (
-    <div className="py-10 flex flex-col space-y-12 select-none relative overflow-hidden">
+    <div className="py-4 flex flex-col space-y-12 select-none relative overflow-hidden">
       <Helmet>
         <title>Dakhala | Pakistan University Admissions & Merit Calculators 2026</title>
         <meta name="description" content="Official admissions directory for NUST, FAST, MDCAT, GIKI, and UET. Calculate aggregate merit, compare tuition fee structures, and check entry test timelines." />
@@ -158,15 +158,17 @@ export default function Home() {
       </Helmet>
       
       {/* Abstract Glowing Blobs in Background */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-40 right-1/4 w-96 h-96 bg-maqsadOrange/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/10 rounded-full blur-3xl" />
+        <div className="absolute top-40 right-1/4 w-96 h-96 bg-maqsadOrange/10 rounded-full blur-3xl" />
+      </div>
 
       {/* Hero Section */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="pt-16 pb-20 relative z-10 flex flex-col items-center text-center space-y-8"
+        className="pt-4 pb-20 relative z-10 flex flex-col items-center text-center space-y-8"
       >
         <div className="max-w-4xl space-y-6">
           <h1 className="hero-heading text-4xl md:text-6xl text-ink dark:text-white tracking-tight leading-tight font-mileast">
@@ -181,6 +183,9 @@ export default function Home() {
             Calculate aggregate merit, compare tuition fee structures, and check entry test timelines across Pakistan.
           </p>
         </div>
+
+        {/* Spacer to push search bar down below the fold */}
+        <div className="h-12 md:h-20 lg:h-24 w-full" aria-hidden="true" />
 
         {/* Advanced AI Semantic Search Bar */}
         <div className="w-full">
@@ -212,18 +217,18 @@ export default function Home() {
               <div 
                 key={`ltr-${uni.id}-${idx}`} 
                 onClick={() => navigate(`/calculator/university/${uni.slug}`)}
-                className="w-32 h-32 bg-white/50 dark:bg-white/[0.03] border border-border/60 dark:border-white/10 rounded-2xl flex items-center justify-center shadow-md backdrop-blur-md hover:border-gold dark:hover:border-gold hover:scale-110 transition-all cursor-pointer select-none"
+                className="w-20 h-20 sm:w-32 sm:h-32 bg-white/50 dark:bg-white/[0.03] border border-border/60 dark:border-white/10 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md backdrop-blur-md hover:border-gold dark:hover:border-gold hover:scale-110 transition-all cursor-pointer select-none shrink-0"
               >
                 <img 
                   src={getUniversityLogo(uni.id)} 
                   alt={`${uni.shortName} Logo`}
-                  className="h-24 w-24 object-contain"
+                  className="h-12 w-12 sm:h-24 sm:w-24 object-contain"
                   onError={(e) => { 
                     e.target.style.display = 'none'; 
                     e.target.nextSibling.style.display = 'flex'; 
                   }} 
                 />
-                <span className="hidden w-24 h-24 rounded-xl bg-gold/10 text-gold text-sm font-black items-center justify-center text-center leading-none">
+                <span className="hidden w-12 h-12 sm:w-24 sm:h-24 rounded-lg sm:rounded-xl bg-gold/10 text-gold text-xs sm:text-sm font-black items-center justify-center text-center leading-none">
                   {uni.shortName.substring(0, 3)}
                 </span>
               </div>
@@ -238,18 +243,18 @@ export default function Home() {
               <div 
                 key={`rtl-${uni.id}-${idx}`} 
                 onClick={() => navigate(`/calculator/university/${uni.slug}`)}
-                className="w-32 h-32 bg-white/50 dark:bg-white/[0.03] border border-border/60 dark:border-white/10 rounded-2xl flex items-center justify-center shadow-md backdrop-blur-md hover:border-gold dark:hover:border-gold hover:scale-110 transition-all cursor-pointer select-none"
+                className="w-20 h-20 sm:w-32 sm:h-32 bg-white/50 dark:bg-white/[0.03] border border-border/60 dark:border-white/10 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md backdrop-blur-md hover:border-gold dark:hover:border-gold hover:scale-110 transition-all cursor-pointer select-none shrink-0"
               >
                 <img 
                   src={getUniversityLogo(uni.id)} 
                   alt={`${uni.shortName} Logo`}
-                  className="h-24 w-24 object-contain"
+                  className="h-12 w-12 sm:h-24 sm:w-24 object-contain"
                   onError={(e) => { 
                     e.target.style.display = 'none'; 
                     e.target.nextSibling.style.display = 'flex'; 
                   }} 
                 />
-                <span className="hidden w-24 h-24 rounded-xl bg-gold/10 text-gold text-sm font-black items-center justify-center text-center leading-none">
+                <span className="hidden w-12 h-12 sm:w-24 sm:h-24 rounded-lg sm:rounded-xl bg-gold/10 text-gold text-xs sm:text-sm font-black items-center justify-center text-center leading-none">
                   {uni.shortName.substring(0, 3)}
                 </span>
               </div>
@@ -466,35 +471,35 @@ export default function Home() {
           Dakhala Impact & Coverage
         </h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative z-10">
-          <div className="py-4 px-2 hover:scale-[1.03] transition-transform duration-300">
-            <div className="bg-gold/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Calculator className="w-6 h-6 text-gold" />
+        <div className="grid grid-cols-3 gap-2 sm:gap-8 text-center relative z-10">
+          <div className="py-2 sm:py-4 px-1 sm:px-2 hover:scale-[1.03] transition-transform duration-300">
+            <div className="bg-gold/10 w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-1.5 sm:mb-3">
+              <Calculator className="w-4 h-4 sm:w-6 sm:h-6 text-gold" />
             </div>
-            <div className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-1.5 tracking-tight font-sans">
+            <div className="text-sm sm:text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-1 sm:mb-1.5 tracking-tight font-sans">
               {stats.calculations.toLocaleString()}+
             </div>
-            <div className="text-xs font-semibold text-muted uppercase tracking-wider">Aggregates Calculated</div>
+            <div className="text-[8px] sm:text-xs font-semibold text-muted uppercase tracking-wider leading-tight">Aggregates Calculated</div>
           </div>
           
-          <div className="py-4 px-2 border-y md:border-y-0 md:border-x border-border/50 dark:border-white/5 hover:scale-[1.03] transition-transform duration-300">
-            <div className="bg-maqsadOrange/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <School className="w-6 h-6 text-maqsadOrange" />
+          <div className="py-2 sm:py-4 px-1 sm:px-2 border-x border-border/50 dark:border-white/5 hover:scale-[1.03] transition-transform duration-300">
+            <div className="bg-maqsadOrange/10 w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-1.5 sm:mb-3">
+              <School className="w-4 h-4 sm:w-6 sm:h-6 text-maqsadOrange" />
             </div>
-            <div className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-1.5 tracking-tight font-sans">
+            <div className="text-sm sm:text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-1 sm:mb-1.5 tracking-tight font-sans">
               {stats.universities}+
             </div>
-            <div className="text-xs font-semibold text-muted uppercase tracking-wider">Universities Mapped</div>
+            <div className="text-[8px] sm:text-xs font-semibold text-muted uppercase tracking-wider leading-tight">Universities Mapped</div>
           </div>
           
-          <div className="py-4 px-2 hover:scale-[1.03] transition-transform duration-300">
-            <div className="bg-maqsadBlue/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <MessageSquare className="w-6 h-6 text-maqsadBlue" />
+          <div className="py-2 sm:py-4 px-1 sm:px-2 hover:scale-[1.03] transition-transform duration-300">
+            <div className="bg-maqsadBlue/10 w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-1.5 sm:mb-3">
+              <MessageSquare className="w-4 h-4 sm:w-6 sm:h-6 text-maqsadBlue" />
             </div>
-            <div className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-1.5 tracking-tight font-sans">
+            <div className="text-sm sm:text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-1 sm:mb-1.5 tracking-tight font-sans">
               {stats.consults.toLocaleString()}+
             </div>
-            <div className="text-xs font-semibold text-muted uppercase tracking-wider">Advisory Consults</div>
+            <div className="text-[8px] sm:text-xs font-semibold text-muted uppercase tracking-wider leading-tight">Advisory Consults</div>
           </div>
         </div>
       </motion.div>

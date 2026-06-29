@@ -9,6 +9,7 @@ import { useAppStore } from './store/useAppStore';
 import { logPageView, logAction } from './lib/telemetry';
 import { auth, onAuthStateChanged } from './lib/firebase';
 import { useAuthStore } from './store/useAuthStore';
+import whatsappLogo from './assets/whatsapp.png';
 
 function TelemetryTracker() {
   const location = useLocation();
@@ -152,7 +153,7 @@ export default function App() {
     <HelmetProvider>
       <Router>
         <TelemetryTracker />
-        <div className={`min-h-screen bg-transparent transition-colors duration-300 flex flex-col ${textSize === 'large' ? 'text-lg' : textSize === 'xlarge' ? 'text-xl' : 'text-base'}`}>
+        <div className={`min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-transparent transition-colors duration-300 flex flex-col ${textSize === 'large' ? 'text-lg' : textSize === 'xlarge' ? 'text-xl' : 'text-base'}`}>
         {/* Navigation Bar */}
         <Navbar />
 
@@ -172,9 +173,7 @@ export default function App() {
             className="flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#1DA851] rounded-full shadow-[0_4px_16px_rgba(37,211,102,0.4)] text-white hover:scale-110 active:scale-95 transition-all relative"
             title="Admissions Live Support"
           >
-            <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24">
-              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 2.698 1.498 4.29 1.499 5.378 0 9.755-4.373 9.758-9.75 0-2.605-1.01-5.053-2.845-6.89C15.962 2.179 13.52 1.17 10.916 1.17c-5.38 0-9.758 4.373-9.76 9.75 0 2.012.524 3.791 1.523 5.438l-1.002 3.656 3.77-1.015zm11.72-6.52c-.27-.135-1.597-.788-1.847-.879-.25-.09-.43-.135-.61.135-.18.27-.698.879-.857 1.057-.16.18-.32.2-.59.065-2.227-1.11-3.83-1.874-5.362-4.5-.4-.69.4-.64 1.15-2.15.13-.27.06-.5-.03-.68-.09-.18-.61-1.48-.836-2.03-.22-.53-.442-.46-.61-.47-.16-.008-.34-.01-.52-.01-.18 0-.475.067-.723.337-.247.27-.945.923-.945 2.25 0 1.328.966 2.61 1.1 2.79.135.18 1.9 2.9 4.606 4.067.644.278 1.147.443 1.54.568.647.206 1.237.177 1.7.11.518-.077 1.597-.653 1.82-1.282.225-.63.225-1.17.157-1.282-.067-.11-.247-.2-.518-.335z" />
-            </svg>
+            <img src={whatsappLogo} alt="WhatsApp" className="w-7 h-7 object-contain" />
             <span className="absolute -inset-1 rounded-full bg-[#25D366] opacity-20 group-hover:opacity-30 animate-ping pointer-events-none" />
             <span className="absolute right-16 scale-0 group-hover:scale-100 transition-all duration-300 origin-right bg-white dark:bg-[#0D1B2A] text-[#0D1B2A] dark:text-white border border-[#CBE3E2] dark:border-white/10 px-3 py-1.5 rounded-xl text-xs font-black shadow-lg whitespace-nowrap">
               💬 Ask a Counselor
@@ -301,9 +300,7 @@ export default function App() {
                 className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#25D366] hover:bg-[#1DA851] text-white font-extrabold text-sm uppercase tracking-wider rounded-xl transition-all w-full justify-center shadow-lg active:scale-[0.98]"
               >
                 {/* WhatsApp SVG Icon */}
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 2.698 1.498 4.29 1.499 5.378 0 9.755-4.373 9.758-9.75 0-2.605-1.01-5.053-2.845-6.89C15.962 2.179 13.52 1.17 10.916 1.17c-5.38 0-9.758 4.373-9.76 9.75 0 2.012.524 3.791 1.523 5.438l-1.002 3.656 3.77-1.015zm11.72-6.52c-.27-.135-1.597-.788-1.847-.879-.25-.09-.43-.135-.61.135-.18.27-.698.879-.857 1.057-.16.18-.32.2-.59.065-2.227-1.11-3.83-1.874-5.362-4.5-.4-.69.4-.64 1.15-2.15.13-.27.06-.5-.03-.68-.09-.18-.61-1.48-.836-2.03-.22-.53-.442-.46-.61-.47-.16-.008-.34-.01-.52-.01-.18 0-.475.067-.723.337-.247.27-.945.923-.945 2.25 0 1.328.966 2.61 1.1 2.79.135.18 1.9 2.9 4.606 4.067.644.278 1.147.443 1.54.568.647.206 1.237.177 1.7.11.518-.077 1.597-.653 1.82-1.282.225-.63.225-1.17.157-1.282-.067-.11-.247-.2-.518-.335z" />
-                </svg>
+                <img src={whatsappLogo} alt="WhatsApp" className="w-6 h-6 object-contain" />
                 Help on WhatsApp
               </a>
             </div>

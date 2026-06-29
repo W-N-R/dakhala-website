@@ -4,6 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  background-color: #D1E5E2;
+  overscroll-behavior: none;
+}
+html.dark {
+  background-color: #0A2220;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background: linear-gradient(135deg, #F3FAF9 0%, #E2F0EE 50%, #D1E5E2 100%) !important; /* Soft pale minty white gradient */
@@ -12,6 +20,7 @@ body {
   padding: 0;
   transition: all 0.3s ease;
   min-height: 100vh;
+  overscroll-behavior: none;
 }
 
 .dark body {
@@ -86,6 +95,17 @@ h1, h2, h3, h4, h5, h6, .logo-font {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #064842;
+}
+
+/* Hide scrollbars completely on mobile for a native app feel */
+@media (max-width: 767px) {
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+  * {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+  }
 }
 
 /* Scrollbar hiding helper */

@@ -87,7 +87,7 @@ export default function UniDates() {
           <h3 className="text-[13px] font-medium text-ink dark:text-white leading-none uppercase tracking-wide">Public Sector</h3>
           <span className="text-[11px] text-muted dark:text-gray-400 font-bold ml-2">({publicUniversities.length} Institutions)</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-3 md:gap-8">
           {publicUniversities.map(uni => (
             <Tilt key={uni.id} tiltMaxAngleX={10} tiltMaxAngleY={10} scale={1.03} transitionSpeed={2000}>
               <UniversityCard
@@ -105,7 +105,7 @@ export default function UniDates() {
           <h3 className="text-[13px] font-medium text-ink dark:text-white leading-none uppercase tracking-wide">Private Sector</h3>
           <span className="text-[11px] text-muted dark:text-gray-400 font-bold ml-2">({privateUniversities.length} Institutions)</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-3 md:gap-8">
           {privateUniversities.map(uni => (
             <Tilt key={uni.id} tiltMaxAngleX={10} tiltMaxAngleY={10} scale={1.03} transitionSpeed={2000}>
               <UniversityCard
@@ -123,7 +123,7 @@ export default function UniDates() {
           <h3 className="text-[13px] font-medium text-ink dark:text-white leading-none uppercase tracking-wide">Semi-Government</h3>
           <span className="text-[11px] text-muted dark:text-gray-400 font-bold ml-2">({semiGovtUniversities.length} Institutions)</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-3 md:gap-8">
           {semiGovtUniversities.map(uni => (
             <Tilt key={uni.id} tiltMaxAngleX={10} tiltMaxAngleY={10} scale={1.03} transitionSpeed={2000}>
               <UniversityCard

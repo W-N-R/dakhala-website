@@ -180,52 +180,55 @@ export default function Cgpacalculator() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="flex gap-2 items-center"
+                    className="flex flex-col sm:flex-row gap-2"
                   >
                     {/* Course Title */}
                     <input
                       type="text"
                       value={course.name}
                       onChange={(e) => handleNameChange(idx, e.target.value)}
-                      className="flex-1 p-3 bg-white/50 border border-border rounded-xl text-xs font-semibold text-ink focus:border-gold outline-none"
+                      className="flex-1 w-full p-3 bg-white/50 border border-border rounded-xl text-xs font-semibold text-ink focus:border-gold outline-none"
                       placeholder="e.g. Programming Fundamentals"
                     />
 
-                    {/* Credit Hours */}
-                    <select
-                      value={course.credits}
-                      onChange={(e) => handleCreditsChange(idx, e.target.value)}
-                      className="w-20 p-3 bg-white/50 border border-border rounded-xl text-xs font-bold text-ink cursor-pointer text-center outline-none focus:border-gold"
-                    >
-                      <option value="1">1 CH</option>
-                      <option value="2">2 CH</option>
-                      <option value="3">3 CH</option>
-                      <option value="4">4 CH</option>
-                    </select>
-
-                    {/* Grade */}
-                    <select
-                      value={course.grade}
-                      onChange={(e) => handleGradeChange(idx, e.target.value)}
-                      className="w-28 p-3 bg-white/50 border border-border rounded-xl text-xs font-extrabold text-goldDark cursor-pointer outline-none focus:border-gold"
-                    >
-                      {Object.keys(GRADE_POINTS).map(g => (
-                        <option key={g} value={g}>
-                          {g} ({GRADE_POINTS[g].toFixed(2)})
-                        </option>
-                      ))}
-                    </select>
-
-                    {/* Remove button */}
-                    {courses.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeCourse(idx)}
-                        className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors w-11 h-11 flex items-center justify-center border border-red-100"
+                    {/* Desktop Group for Selects & Button */}
+                    <div className="flex gap-2 w-full sm:w-auto">
+                      {/* Credit Hours */}
+                      <select
+                        value={course.credits}
+                        onChange={(e) => handleCreditsChange(idx, e.target.value)}
+                        className="flex-1 sm:w-20 p-3 bg-white/50 border border-border rounded-xl text-xs font-bold text-ink cursor-pointer text-center outline-none focus:border-gold"
                       >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    )}
+                        <option value="1">1 CH</option>
+                        <option value="2">2 CH</option>
+                        <option value="3">3 CH</option>
+                        <option value="4">4 CH</option>
+                      </select>
+
+                      {/* Grade */}
+                      <select
+                        value={course.grade}
+                        onChange={(e) => handleGradeChange(idx, e.target.value)}
+                        className="flex-1 sm:w-28 p-3 bg-white/50 border border-border rounded-xl text-xs font-extrabold text-goldDark cursor-pointer outline-none focus:border-gold"
+                      >
+                        {Object.keys(GRADE_POINTS).map(g => (
+                          <option key={g} value={g}>
+                            {g} ({GRADE_POINTS[g].toFixed(2)})
+                          </option>
+                        ))}
+                      </select>
+
+                      {/* Remove button */}
+                      {courses.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeCourse(idx)}
+                          className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors w-11 h-11 flex shrink-0 items-center justify-center border border-red-100"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
                   </motion.div>
                 ))}
               </AnimatePresence>

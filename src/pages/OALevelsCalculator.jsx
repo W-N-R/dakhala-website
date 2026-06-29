@@ -146,8 +146,10 @@ export default function OALevelsCalculator() {
       </Helmet>
       
       {/* Background Glowing Blobs */}
-      <div className="absolute top-10 left-1/4 w-80 h-80 bg-gold/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-60 right-1/4 w-80 h-80 bg-maqsadOrange/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-10 left-1/4 w-80 h-80 bg-gold/10 rounded-full blur-3xl" />
+        <div className="absolute top-60 right-1/4 w-80 h-80 bg-maqsadOrange/5 rounded-full blur-3xl" />
+      </div>
 
       {/* Header Info */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 max-w-[1000px] mx-auto w-full text-center md:text-left relative z-10">

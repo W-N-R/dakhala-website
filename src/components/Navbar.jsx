@@ -135,11 +135,12 @@ export default function Navbar() {
   // Render Mobile Hamburger & Drawer
   if (isMobile) {
     return (
-      <nav ref={navRef} className="sticky top-0 z-50 w-full bg-[#B5DFDD]/85 dark:bg-[#0A1C2A]/85 backdrop-blur-md border-b border-[#9BD7D2]/50 dark:border-gold/20 px-4 py-2 select-none">
+      <>
+        <nav ref={navRef} className="sticky top-0 z-50 w-full bg-[#B5DFDD]/85 dark:bg-[#0A1C2A]/85 backdrop-blur-md border-b border-[#9BD7D2]/50 dark:border-gold/20 px-4 pt-3.5 pb-2.5 select-none">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center focus:outline-none select-none group">
-            <span className="logo-font-urdu text-[38px] bg-gradient-to-r from-gold via-goldDark to-gold bg-clip-text text-transparent font-black tracking-wide leading-none drop-shadow-[0_2px_10px_rgba(0,212,255,0.15)] transition-all duration-300">
+            <span className="logo-font-urdu text-[38px] bg-gradient-to-r from-gold via-goldDark to-gold bg-clip-text text-transparent font-black tracking-wide leading-none drop-shadow-[0_2px_10px_rgba(0,212,255,0.15)] transition-all duration-300 pt-2">
               داخلہ
             </span>
           </Link>
@@ -171,11 +172,11 @@ export default function Navbar() {
             </button>
           </div>
         </div>
+        </nav>
 
         {/* Full-screen Drawer Overlay */}
         {isDrawerOpen && (
-          <div className="fixed inset-0 z-50 bg-black/40 flex justify-end">
-            <div className="w-full max-w-[320px] bg-[#B5DFDD]/95 dark:bg-[#0A1C2A]/95 border-l border-[#9BD7D2]/50 dark:border-gold/20 backdrop-blur-md h-full p-5 overflow-y-auto flex flex-col space-y-4 text-ink dark:text-white">
+          <div className="fixed inset-0 z-[100] bg-[#B5DFDD]/98 dark:bg-[#0A1C2A]/98 backdrop-blur-xl flex flex-col p-5 overflow-y-auto space-y-4 text-ink dark:text-white">
 
               {/* Close Button */}
               <div className="flex justify-between items-center pb-3 border-b border-border dark:border-white/10">
@@ -371,12 +372,10 @@ export default function Navbar() {
                   )}
                 </div>
 
-              </div>
-
             </div>
           </div>
         )}
-      </nav>
+      </>
     );
   }
 
@@ -591,7 +590,7 @@ export default function Navbar() {
                           </div>
 
                           {/* List of Universities */}
-                          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 max-h-[220px] overflow-y-auto pr-1">
+                          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 max-h-[320px] overflow-y-auto pr-1">
                             {(openSubSector === 'calc-public'
                               ? publicUniversities
                               : openSubSector === 'calc-private'
@@ -673,7 +672,7 @@ export default function Navbar() {
                         </div>
 
                         {/* List of Universities */}
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 max-h-[220px] overflow-y-auto pr-1">
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 max-h-[320px] overflow-y-auto pr-1">
                           {(openSubSector.endsWith('public')
                             ? publicUniversities
                             : openSubSector.endsWith('private')
@@ -798,7 +797,7 @@ export default function Navbar() {
                             </div>
 
                             {/* List of Universities */}
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 max-h-[220px] overflow-y-auto pr-1">
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 max-h-[320px] overflow-y-auto pr-1">
                               {(openSubSector === 'guide-public'
                                 ? publicUniversities
                                 : openSubSector === 'guide-private'
@@ -822,7 +821,7 @@ export default function Navbar() {
                             <div className="text-[10px] text-muted dark:text-white/40 border-b border-border dark:border-white/5 pb-1 mb-2 font-extrabold uppercase tracking-wider">
                               Choose Entry Test to View Syllabus
                             </div>
-                            <div className="grid grid-cols-3 gap-2 max-h-[220px] overflow-y-auto pr-1">
+                            <div className="grid grid-cols-3 gap-2 max-h-[320px] overflow-y-auto pr-1">
                               {entryTestsList.map((test) => (
                                 <button
                                   key={test.slug}

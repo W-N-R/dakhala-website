@@ -477,7 +477,7 @@ Calculate your aggregate instantly on Dakhala:
                           placeholder="Obtained"
                           value={matricObt}
                           onChange={e => setMatricObt(e.target.value)}
-                          className="flex-1 p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
+                          className="flex-1 min-w-0 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
                         />
                         <span className="text-ink/40 dark:text-white/40 font-bold text-lg">/</span>
                         <input
@@ -485,7 +485,7 @@ Calculate your aggregate instantly on Dakhala:
                           placeholder="Total"
                           value={matricTotal}
                           onChange={e => setMatricTotal(e.target.value)}
-                          className="w-24 sm:w-32 p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors text-center"
+                          className="w-20 sm:w-32 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors text-center"
                         />
                       </div>
                     </div>
@@ -504,7 +504,7 @@ Calculate your aggregate instantly on Dakhala:
                           placeholder="Obtained"
                           value={fscObt}
                           onChange={e => setFscObt(e.target.value)}
-                          className="flex-1 p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
+                          className="flex-1 min-w-0 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
                         />
                         <span className="text-ink/40 dark:text-white/40 font-bold text-lg">/</span>
                         <input
@@ -512,7 +512,7 @@ Calculate your aggregate instantly on Dakhala:
                           placeholder="Total"
                           value={fscTotal}
                           onChange={e => setFscTotal(e.target.value)}
-                          className="w-24 sm:w-32 p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors text-center"
+                          className="w-20 sm:w-32 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors text-center"
                         />
                       </div>
                     </div>
@@ -554,7 +554,7 @@ Calculate your aggregate instantly on Dakhala:
                               placeholder="Obtained Marks (Correct Answers)"
                               value={correctAnswers}
                               onChange={e => setCorrectAnswers(e.target.value)}
-                              className="flex-1 p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
+                              className="flex-1 min-w-0 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
                             />
                             <span className="text-ink/40 dark:text-white/40 font-bold text-lg">/</span>
                             <input
@@ -562,7 +562,7 @@ Calculate your aggregate instantly on Dakhala:
                               placeholder="Total MCQs"
                               value={totalMcqs}
                               onChange={e => setTotalMcqs(e.target.value)}
-                              className="w-24 sm:w-32 p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors text-center"
+                              className="w-20 sm:w-32 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors text-center"
                             />
                           </div>
                           
@@ -609,10 +609,10 @@ Calculate your aggregate instantly on Dakhala:
                               placeholder="Obtained Percentage"
                               value={testPercent}
                               onChange={e => setTestPercent(e.target.value)}
-                              className="flex-1 p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
+                              className="flex-1 min-w-0 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
                             />
                             <span className="text-ink/40 dark:text-white/40 font-bold text-lg">/</span>
-                            <div className="w-24 sm:w-32 p-4 bg-white/30 dark:bg-white/[0.01] border border-border dark:border-white/10 rounded-xl text-ink/40 dark:text-white/40 font-semibold text-sm text-center flex items-center justify-center">
+                            <div className="w-20 sm:w-32 p-3 sm:p-4 bg-white/30 dark:bg-white/[0.01] border border-border dark:border-white/10 rounded-xl text-ink/40 dark:text-white/40 font-semibold text-sm text-center flex items-center justify-center">
                               100
                             </div>
                           </div>

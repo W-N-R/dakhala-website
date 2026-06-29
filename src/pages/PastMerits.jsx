@@ -253,9 +253,9 @@ export default function PastMerits() {
               <div className="p-4 bg-cloudy dark:bg-white/5 border-b border-border dark:border-white/10">
                 <h3 className="text-xs font-bold text-ink dark:text-white uppercase tracking-wider">Raw Data Table</h3>
               </div>
-              <div className="overflow-x-auto no-scrollbar">
-                <table className="w-full text-left text-xs border-collapse min-w-[700px]">
-                  <thead>
+              <div className="md:overflow-x-auto no-scrollbar">
+                <table className="w-full text-left text-xs border-collapse md:min-w-[700px] block md:table">
+                  <thead className="hidden md:table-header-group">
                     <tr className="bg-white dark:bg-[#0C132C] border-b border-border dark:border-white/10 text-muted dark:text-gray-400 font-bold uppercase tracking-wider text-[10px]">
                       <th className="p-4 w-[220px]">Degree Program</th>
                       {years.map(year => (
@@ -263,14 +263,34 @@ export default function PastMerits() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="block md:table-row-group">
                     {filteredPrograms.map((prog, idx) => {
                       const merits7 = get7YearMerits(prog);
                       return (
-                        <tr key={idx} className="border-b border-border dark:border-white/5 hover:bg-gold/5 dark:hover:bg-gold/10 transition-colors group">
-                          <td className="p-4 font-extrabold text-ink dark:text-white text-sm group-hover:text-goldDark transition-colors">{prog.name}</td>
+                        <tr key={idx} className="block md:table-row border-b border-border dark:border-white/5 hover:bg-gold/5 dark:hover:bg-gold/10 transition-colors group p-4 md:p-0">
+                          <td className="block md:table-cell p-0 pb-3 md:p-4 font-extrabold text-ink dark:text-white text-sm group-hover:text-goldDark transition-colors">
+                            {prog.name}
+                          </td>
+                          
+                          {/* Mobile View: Years Grid */}
+                          <td className="block md:hidden">
+                            <div className="grid grid-cols-4 gap-2">
+                              {years.map(year => (
+                                merits7[year] ? (
+                                  <div key={year} className="flex flex-col gap-1 bg-gray-50/80 dark:bg-white/[0.02] border border-border dark:border-white/5 p-2 rounded-lg items-center">
+                                    <span className="text-[9px] font-bold text-muted dark:text-gray-500 uppercase">{year}</span>
+                                    <span className="bg-white dark:bg-gray-800 text-ink dark:text-cloudy px-2 py-0.5 rounded-md font-bold border border-border dark:border-white/10 shadow-sm text-[11px]">
+                                      {uni.meritData?.type === 'rank' ? `#${merits7[year]}` : `${merits7[year]}%`}
+                                    </span>
+                                  </div>
+                                ) : null
+                              ))}
+                            </div>
+                          </td>
+
+                          {/* Desktop View: Standard Table Cells */}
                           {years.map(year => (
-                            <td key={year} className="p-4 text-center text-muted dark:text-gray-400 font-semibold group-hover:text-ink dark:group-hover:text-white transition-colors">
+                            <td key={year} className="hidden md:table-cell p-4 text-center text-muted dark:text-gray-400 font-semibold group-hover:text-ink dark:group-hover:text-white transition-colors">
                               {merits7[year] ? (
                                 <span className="bg-cloudy dark:bg-gray-800 text-ink dark:text-cloudy px-2 py-1 rounded-md">
                                   {uni.meritData?.type === 'rank' ? `#${merits7[year]}` : `${merits7[year]}%`}
