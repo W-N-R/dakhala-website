@@ -823,12 +823,13 @@ export const privateUniversities = [
     entryTest: "NU Test",
     categories: ["cs", "engineering", "business"],
     slug: "fast-nuces",
-    feePerSemester: 165000,
+    feePerSemester: 216000,
     educationSystems: ["FSc", "A-Levels (Immediate)", "A-Levels (Gap Year)"],
     entryTestTypes: ["NU Test", "NAT", "SAT"],
     programGroups: [
       {
         groupName: "Computing (CS, SE, AI, DS)",
+        programs: ["BS CS", "BS SE", "BS AI", "BS DS", "BS Cyber"],
         formulas: {
           "FSc": { matric: 10, fsc: 40, test: 50 },
           "A-Levels (Immediate)": { matric: 10, fsc: 40, test: 50 },
@@ -837,6 +838,7 @@ export const privateUniversities = [
       },
       {
         groupName: "Engineering (EE, CE, Civil)",
+        programs: ["BS EE", "BS CE", "BS Civil"],
         formulas: {
           "FSc": { matric: 17, fsc: 50, test: 33 },
           "A-Levels (Immediate)": { matric: 17, fsc: 50, test: 33 },
@@ -845,6 +847,7 @@ export const privateUniversities = [
       },
       {
         groupName: "Business (BBA, AFM)",
+        programs: ["BBA", "BS A&F", "BS Business Analytics", "BS FinTech"],
         formulas: {
           "FSc": { matric: 10, fsc: 40, test: 50 },
           "A-Levels (Immediate)": { matric: 10, fsc: 40, test: 50 },
@@ -855,14 +858,14 @@ export const privateUniversities = [
     formula: { matric: 0, fsc: 50, test: 50 },
     testPattern: {
       testName: "NU Test",
-      totalMcqs: 120,
+      totalMcqs: 100,
       duration: "2 hours",
       totalMarks: 100,
       subjects: [
-        { name: "Advanced Math", mcqs: 50 },
+        { name: "Adv. Math", mcqs: 50 },
         { name: "Basic Math", mcqs: 20 },
-        { name: "IQ", mcqs: 20 },
-        { name: "English", mcqs: 30 }
+        { name: "Analytical Skills & IQ", mcqs: 20 },
+        { name: "English", mcqs: 10 }
       ],
       tags: ["Negative Marking", "No Calculator", "Computer Based"]
     },

@@ -58,6 +58,7 @@ export default function UniversityDetailCalculator() {
   const [testPercent, setTestPercent] = useState('');
   const [matricPercent, setMatricPercent] = useState('');
   const [fscPercent, setFscPercent] = useState('');
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [liveAggregate, setLiveAggregate] = useState(0);
 
   // 3D rotation state
@@ -85,7 +86,7 @@ export default function UniversityDetailCalculator() {
 
     // Test pattern defaults
     if (uni.testPattern) {
-      setTotalMcqs(uni.testPattern.totalMcqs);
+      setTotalMcqs(uni.testPattern.totalMarks || uni.testPattern.totalMcqs);
       const hasNeg = uni.testPattern.tags?.includes('Negative Marking');
       setNegMarking(hasNeg);
       setDeduction(hasNeg ? 0.25 : 0);
@@ -633,14 +634,22 @@ Calculate your aggregate instantly on Dakhala:
                     </div>
                   )}
 
-                  {/* Calculate Button (exactly centered) */}
-                  <div className="flex justify-center pt-6">
+                  {/* Calculate Button & Guide */}
+                  <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6">
                     <button
                       type="button"
                       onClick={() => setActiveTab('results')}
                       className="px-8 py-3.5 bg-[#1D2E28] hover:bg-[#1D2E28]/90 text-white font-bold text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg hover:shadow-[#1D2E28]/30 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
                     >
                       Calculate Aggregate
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsGuideOpen(true)}
+                      className="px-6 py-3.5 bg-white/60 hover:bg-white dark:bg-white/5 dark:hover:bg-white/10 text-[#1D2E28] dark:text-white font-bold text-sm uppercase tracking-wider rounded-xl border border-border dark:border-white/10 transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+                    >
+                      <Info className="w-4 h-4" />
+                      How is it calculated?
                     </button>
                   </div>
                 </div>
@@ -723,6 +732,13 @@ Calculate your aggregate instantly on Dakhala:
                             });
                             return { name: progName, merits: meritsObj };
                           });
+                          
+                          if (uni.programGroups?.length > 0) {
+                            const activeGroup = uni.programGroups[selectedProgramGroup];
+                            if (activeGroup && activeGroup.programs) {
+                              programList = programList.filter(p => activeGroup.programs.includes(p.name));
+                            }
+                          }
                         } else {
                           programList = uni.programs || [];
                         }
@@ -884,6 +900,20 @@ Calculate your aggregate instantly on Dakhala:
                         </div>
                       </div>
 
+                      {uni.testPattern.subjects && (
+                        <div className="space-y-3 bg-white/30 dark:bg-white/[0.01] p-5 rounded-2xl border border-border dark:border-white/5">
+                          <h5 className="text-xs font-bold text-ink dark:text-white uppercase tracking-widest border-b border-border dark:border-white/10 pb-2">Subject Weightage / Marks Allocation</h5>
+                          <div className="space-y-3">
+                            {uni.testPattern.subjects.map((sub, idx) => (
+                              <div key={idx} className="flex justify-between items-center text-xs text-ink/80 dark:text-white/80">
+                                <span className="capitalize">{sub.name} section</span>
+                                <span className="font-bold text-ink dark:text-white font-mono">{sub.mcqs} MCQs</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
                       {uni.testPattern.sections && (
                         <div className="space-y-3 bg-white/30 dark:bg-white/[0.01] p-5 rounded-2xl border border-border dark:border-white/5">
                           <h5 className="text-xs font-bold text-ink dark:text-white uppercase tracking-widest border-b border-border dark:border-white/10 pb-2">Subject Weightage / Marks Allocation</h5>
@@ -952,6 +982,97 @@ Calculate your aggregate instantly on Dakhala:
           </Tilt>
         </div>
       </div>
+
+      {/* Guide Modal */}
+      <AnimatePresence>
+        {isGuideOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/80 dark:bg-black/80 backdrop-blur-sm"
+            onClick={() => setIsGuideOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white dark:bg-[#0A1128] rounded-3xl p-6 md:p-8 max-w-3xl w-full shadow-2xl relative border border-border dark:border-white/10"
+            >
+              <button
+                onClick={() => setIsGuideOpen(false)}
+                className="absolute top-4 right-4 p-2 bg-ink/5 hover:bg-ink/10 dark:bg-white/5 dark:hover:bg-white/10 rounded-full transition-colors"
+              >
+                <XCircle className="w-6 h-6 text-ink/50 dark:text-white/50" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-gold/20 flex items-center justify-center text-goldDark">
+                  <Calculator className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-ink dark:text-white">How it's calculated</h3>
+                  <p className="text-sm text-ink/60 dark:text-white/60 font-semibold">Official {uni.shortName} formula breakdown</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-cloudy dark:bg-white/[0.02] rounded-2xl p-5 border border-border/50 dark:border-white/5 h-full">
+                  <p className="text-sm font-bold text-ink dark:text-white mb-4">Your selected program uses this weightage:</p>
+                  
+                  <div className="space-y-3">
+                    {activeFormula.matric > 0 && (
+                      <div className="flex justify-between items-center bg-white dark:bg-white/5 p-3 rounded-xl shadow-sm">
+                        <span className="text-sm font-bold text-ink/80 dark:text-white/80">🏫 Matric / O-Level</span>
+                        <span className="text-lg font-black text-[#25A18E]">{activeFormula.matric}%</span>
+                      </div>
+                    )}
+                    {activeFormula.fsc > 0 && (
+                      <div className="flex justify-between items-center bg-white dark:bg-white/5 p-3 rounded-xl shadow-sm">
+                        <span className="text-sm font-bold text-ink/80 dark:text-white/80">🎓 Intermediate / A-Level</span>
+                        <span className="text-lg font-black text-[#25A18E]">{activeFormula.fsc}%</span>
+                      </div>
+                    )}
+                    {activeFormula.test > 0 && (
+                      <div className="flex justify-between items-center bg-white dark:bg-white/5 p-3 rounded-xl shadow-sm">
+                        <span className="text-sm font-bold text-ink/80 dark:text-white/80">📝 Entry Test</span>
+                        <span className="text-lg font-black text-[#25A18E]">{activeFormula.test}%</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-[#1D2E28]/5 dark:bg-[#1D2E28]/20 rounded-2xl p-5 border border-[#1D2E28]/10 h-full flex flex-col justify-center">
+                  <h4 className="text-sm font-bold text-[#1D2E28] dark:text-white flex items-center gap-2 mb-3">
+                    <Info className="w-4 h-4" /> Simple Example
+                  </h4>
+                  <p className="text-xs text-ink/70 dark:text-white/70 leading-relaxed font-medium">
+                    If you score 80% in Matric, 75% in Inter, and 60% in the Entry Test, your aggregate will be:<br/><br/>
+                    <span className="font-mono bg-white dark:bg-black/20 px-3 py-3 rounded-lg block mt-1 border border-border/50 dark:border-white/10">
+                      {activeFormula.matric > 0 && `(80 × ${(activeFormula.matric / 100).toFixed(2)}) `}
+                      {activeFormula.matric > 0 && (activeFormula.fsc > 0 || activeFormula.test > 0) && '+ '}
+                      {activeFormula.fsc > 0 && `(75 × ${(activeFormula.fsc / 100).toFixed(2)}) `}
+                      {activeFormula.fsc > 0 && activeFormula.test > 0 && '+ '}
+                      {activeFormula.test > 0 && `(60 × ${(activeFormula.test / 100).toFixed(2)}) `}
+                      <br/><br/>= <strong className="text-[#25A18E] text-base">{((80 * (activeFormula.matric||0)/100) + (75 * (activeFormula.fsc||0)/100) + (60 * (activeFormula.test||0)/100)).toFixed(2)}%</strong>
+                    </span>
+                  </p>
+                </div>
+                
+                <div className="md:col-span-2 mt-2">
+                  <button
+                    onClick={() => setIsGuideOpen(false)}
+                    className="w-full py-4 bg-[#1D2E28] hover:bg-[#1D2E28]/90 text-white font-bold text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95"
+                  >
+                    Got it, thanks!
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
