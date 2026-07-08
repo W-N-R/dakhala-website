@@ -85,7 +85,7 @@ export default function UniversityDetailCalculator() {
 
     // Test pattern defaults
     if (uni.testPattern) {
-      setTotalMcqs(uni.testPattern.totalMcqs);
+      setTotalMcqs(uni.testPattern.totalMarks || uni.testPattern.totalMcqs);
       const hasNeg = uni.testPattern.tags?.includes('Negative Marking');
       setNegMarking(hasNeg);
       setDeduction(hasNeg ? 0.25 : 0);
