@@ -11,6 +11,8 @@ import Tilt from 'react-parallax-tilt';
 import EduAnimation from '../components/EduAnimation';
 import EditableBlock from '../components/EditableBlock';
 import { logCalculation } from '../lib/telemetry';
+import { toPng } from 'html-to-image';
+import ScorecardImage from '../components/ScorecardImage';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 import {
   ChevronRight, GraduationCap, Calculator, Target, Info,
@@ -24,6 +26,9 @@ export default function UniversityDetailCalculator() {
   const navigate = useNavigate();
   const { universities, updateUniversity } = useDataStore();
   const uni = universities.find(u => u.slug === slug);
+
+  const scorecardRef = useRef(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const [activeTab, setActiveTab] = useState(uni?.slug === 'fast-nuces' ? 'test marks' : 'merit calc');
   const [rightPanelTab, setRightPanelTab] = useState('campus');
@@ -288,8 +293,56 @@ Calculate your aggregate instantly on Dakhala:
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleWhatsApp = () => {
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(generateShareText())}`, '_blank');
+  const handleWhatsApp = async () => {
+    if (isGenerating) return;
+    
+    try {
+      setIsGenerating(true);
+      
+      // Give a tiny delay to ensure React renders the hidden component fully
+      await new Promise(r => setTimeout(r, 100));
+      
+      if (!scorecardRef.current) return;
+      
+      const dataUrl = await toPng(scorecardRef.current, {
+        quality: 1.0,
+        pixelRatio: 2,
+        cacheBust: true,
+      });
+
+      // Try native share for mobile devices
+      if (navigator.share) {
+        try {
+          const res = await fetch(dataUrl);
+          const blob = await res.blob();
+          const file = new File([blob], `${uni.shortName}_Scorecard.png`, { type: 'image/png' });
+          
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: `${uni.name} Admission Scorecard`,
+              text: `Check out my admission chances for ${uni.name}!`,
+            });
+            return;
+          }
+        } catch (shareError) {
+          console.log("Native share failed or cancelled, falling back to download", shareError);
+        }
+      }
+      
+      // Fallback: download on desktop
+      const link = document.createElement('a');
+      link.download = `${uni.shortName}_Admission_Scorecard.png`;
+      link.href = dataUrl;
+      link.click();
+      
+    } catch (err) {
+      console.error('Error generating image', err);
+      // Ultimate fallback: open whatsapp text
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(generateShareText())}`, '_blank');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   if (!uni) return null;
@@ -796,7 +849,7 @@ Calculate your aggregate instantly on Dakhala:
                       </div>
                     </div>
                   </div>
-
+                  
                   {/* Admission Feasibility Cutoffs */}
                   <div className="space-y-4 bg-white/30 dark:bg-white/[0.01] p-6 rounded-2xl border border-border dark:border-white/5">
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-border dark:border-white/10 pb-3">
@@ -1173,6 +1226,18 @@ Calculate your aggregate instantly on Dakhala:
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Hidden Scorecard for Image Generation */}
+      <div className="fixed top-0 left-0 -z-50 opacity-0 pointer-events-none" style={{ transform: 'scale(1)' }}>
+        <ScorecardImage 
+          ref={scorecardRef}
+          uni={uni}
+          aggregate={liveAggregate?.toFixed(2) || '0.00'}
+          programGroup={uni.programGroups?.[selectedProgramGroup]?.groupName}
+          campus={selectedMeritCampus}
+          edSystem={selectedEdSystem === 'a-level' ? 'A-Levels/O-Levels' : 'FSc/Matric'}
+        />
+      </div>
     </div>
   );
 }
