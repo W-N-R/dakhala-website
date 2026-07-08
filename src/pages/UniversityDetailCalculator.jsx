@@ -25,7 +25,7 @@ export default function UniversityDetailCalculator() {
   const { universities, updateUniversity } = useDataStore();
   const uni = universities.find(u => u.slug === slug);
 
-  const [activeTab, setActiveTab] = useState('calculator');
+  const [activeTab, setActiveTab] = useState(uni?.slug === 'fast-nuces' ? 'test marks' : 'merit calc');
   const [rightPanelTab, setRightPanelTab] = useState('campus');
   const [selectedProgramGroup, setSelectedProgramGroup] = useState(0);
   const [selectedEdSystem, setSelectedEdSystem] = useState('');
@@ -60,6 +60,7 @@ export default function UniversityDetailCalculator() {
   const [fscPercent, setFscPercent] = useState('');
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [liveAggregate, setLiveAggregate] = useState(0);
+  const [slipData, setSlipData] = useState({});
 
   // 3D rotation state
   const [rotationY, setRotationY] = useState(0);
@@ -383,8 +384,8 @@ Calculate your aggregate instantly on Dakhala:
             className="flat-card p-6 md:p-8 relative flex flex-col space-y-6 text-ink dark:text-white"
           >
             {/* Top Tab Bar (exact style as screenshot) */}
-            <div className="flex border-b border-border/70 dark:border-white/10 select-none pb-0 relative">
-              {['Calculator', 'Results', 'Merit', 'Pattern'].map((tab) => (
+            <div className="flex border-b border-border/70 dark:border-white/10 select-none pb-0 relative overflow-x-auto">
+              {[ ...(uni.slug === 'fast-nuces' ? ['Test Marks'] : []), 'Merit Calc', 'Results', 'Merit', 'Pattern'].map((tab) => (
                 <button
                   key={tab}
                   type="button"
@@ -403,7 +404,7 @@ Calculate your aggregate instantly on Dakhala:
 
             {/* Tab Contents */}
             <div className="space-y-6">
-              {activeTab === 'calculator' && (
+              {activeTab === 'merit calc' && (
                 <div className="space-y-6">
                   {/* Live Aggregate Hub Banner */}
                   <div className="glass-panel p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-[#1D2E28]/10 to-gold/10 border-[#1D2E28]/20">
@@ -652,6 +653,105 @@ Calculate your aggregate instantly on Dakhala:
                       How is it calculated?
                     </button>
                   </div>
+                </div>
+              )}
+
+              {activeTab === 'test marks' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="border-b border-border dark:border-white/10 pb-3">
+                    <h4 className="font-extrabold text-ink dark:text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                      <span className="bg-[#25A18E]/20 text-[#25A18E] px-2 py-0.5 rounded text-[10px]">NEW</span> 
+                      NU Test Slip Calculator
+                    </h4>
+                    <p className="text-xs text-muted dark:text-white/50 mt-1">Calculate your final entry test marks after negative marking (-0.25). Enter your total attempted and correct questions for each section from your physical slip.</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {uni.testPattern?.subjects?.map(sub => {
+                      const data = slipData[sub.name] || { att: '', corr: '' };
+                      const att = Number(data.att) || 0;
+                      const corr = Number(data.corr) || 0;
+                      const wrong = Math.max(0, att - corr);
+                      const penalty = wrong * 0.25;
+                      const net = (corr - penalty) * (sub.weight || 1);
+                      
+                      return (
+                        <div key={sub.name} className="bg-white/30 dark:bg-white/[0.01] p-3.5 rounded-xl border border-border dark:border-white/5 flex flex-col gap-3 justify-between">
+                          <div className="flex justify-between items-start">
+                            <h5 className="font-bold text-sm text-ink dark:text-white">{sub.name}</h5>
+                            <p className="text-[11px] text-ink/60 dark:text-white/60 font-mono">Wt: {sub.weight || 1} | Max: {sub.mcqs}</p>
+                          </div>
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex flex-col">
+                              <label className="text-[11px] uppercase tracking-wider font-bold text-ink/70 dark:text-white/70 mb-1">Attempted</label>
+                              <input 
+                                type="number" 
+                                min="0" 
+                                max={sub.mcqs}
+                                value={data.att} 
+                                onChange={e => setSlipData({...slipData, [sub.name]: {...data, att: e.target.value}})}
+                                className="w-16 py-1.5 px-2 bg-white/50 dark:bg-black/20 border border-border dark:border-white/10 rounded-lg text-sm font-bold text-center focus:outline-none focus:border-[#1D2E28]"
+                              />
+                            </div>
+                            <div className="flex flex-col">
+                              <label className="text-[11px] uppercase tracking-wider font-bold text-ink/70 dark:text-white/70 mb-1">Correct</label>
+                              <input 
+                                type="number" 
+                                min="0" 
+                                max={data.att || sub.mcqs}
+                                value={data.corr} 
+                                onChange={e => setSlipData({...slipData, [sub.name]: {...data, corr: e.target.value}})}
+                                className="w-16 py-1.5 px-2 bg-white/50 dark:bg-black/20 border border-border dark:border-white/10 rounded-lg text-sm font-bold text-center focus:outline-none focus:border-[#1D2E28]"
+                              />
+                            </div>
+                            <div className="flex flex-col items-end justify-center">
+                              <span className="text-[11px] uppercase tracking-wider font-bold text-ink/50 dark:text-white/50 mb-1">Score</span>
+                              <span className={`text-lg font-black font-mono ${net >= 0 ? 'text-[#25A18E]' : 'text-rose-400'}`}>{net.toFixed(2)}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  <div className="bg-[#1D2E28]/5 dark:bg-[#1D2E28]/20 p-5 rounded-2xl border border-[#1D2E28]/10 flex justify-between items-center mt-2">
+                    <div>
+                      <h4 className="font-extrabold text-[#1D2E28] dark:text-white">Total NU Test Score</h4>
+                      <p className="text-[11px] text-ink/60 dark:text-white/60">Out of {uni.testPattern?.totalMarks || 100}</p>
+                    </div>
+                    <div className="text-3xl font-black text-goldDark">
+                      {uni.testPattern?.subjects?.reduce((total, sub) => {
+                        const data = slipData[sub.name] || { att: '', corr: '' };
+                        const att = Number(data.att) || 0;
+                        const corr = Number(data.corr) || 0;
+                        const wrong = Math.max(0, att - corr);
+                        const net = (corr - (wrong * 0.25)) * (sub.weight || 1);
+                        return total + net;
+                      }, 0).toFixed(2)}
+                    </div>
+                  </div>
+                  
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const total = uni.testPattern?.subjects?.reduce((total, sub) => {
+                        const data = slipData[sub.name] || { att: '', corr: '' };
+                        const att = Number(data.att) || 0;
+                        const corr = Number(data.corr) || 0;
+                        const wrong = Math.max(0, att - corr);
+                        const net = (corr - (wrong * 0.25)) * (sub.weight || 1);
+                        return total + net;
+                      }, 0);
+                      setTestPercent(total.toFixed(2));
+                      setSkipTestCalc(true);
+                      setActiveTab('merit calc');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="w-full py-3.5 bg-[#1D2E28] hover:bg-[#1D2E28]/90 text-white font-bold text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 cursor-pointer mt-4"
+                  >
+                    Use this score in Merit Calc
+                  </button>
+
                 </div>
               )}
 

@@ -858,14 +858,14 @@ export const privateUniversities = [
     formula: { matric: 0, fsc: 50, test: 50 },
     testPattern: {
       testName: "NU Test",
-      totalMcqs: 100,
+      totalMcqs: 120,
       duration: "2 hours",
       totalMarks: 100,
       subjects: [
-        { name: "Adv. Math", mcqs: 50 },
-        { name: "Basic Math", mcqs: 20 },
-        { name: "Analytical Skills & IQ", mcqs: 20 },
-        { name: "English", mcqs: 10 }
+        { name: "English", mcqs: 30, weight: 0.33 },
+        { name: "Analytical Skills & IQ", mcqs: 20, weight: 1 },
+        { name: "Basic Math", mcqs: 20, weight: 1 },
+        { name: "Adv. Math", mcqs: 50, weight: 1 }
       ],
       tags: ["Negative Marking", "No Calculator", "Computer Based"]
     },
