@@ -16,7 +16,7 @@ import ScorecardImage from '../components/ScorecardImage';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
 import {
   ChevronRight, GraduationCap, Calculator, Target, Info,
-  Share2, Check, CheckCircle2, AlertCircle, XCircle, Copy,
+  Share2, Check, CheckCircle2, AlertCircle, XCircle, Copy, Download,
   MessageSquare, Clock, BookOpen, Award, BarChart3, Zap,
   MapPin, Building2, TrendingUp, ChevronDown, Settings
 } from 'lucide-react';
@@ -293,6 +293,24 @@ Calculate your aggregate instantly on Dakhala:
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDownloadImage = async () => {
+    if (isGenerating) return;
+    try {
+      setIsGenerating(true);
+      await new Promise(r => setTimeout(r, 100)); // wait for render
+      if (!scorecardRef.current) return;
+      const dataUrl = await toPng(scorecardRef.current, { quality: 1.0, pixelRatio: 2, cacheBust: true });
+      const link = document.createElement('a');
+      link.download = `${uni.shortName}_Admission_Scorecard.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Error downloading image', err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const handleWhatsApp = async () => {
     if (isGenerating) return;
     
@@ -347,6 +365,30 @@ Calculate your aggregate instantly on Dakhala:
       setIsGenerating(false);
     }
   };
+
+  const eligiblePrograms = React.useMemo(() => {
+    if (!uni) return [];
+    const campusMeritData = uni.meritData?.campuses?.[selectedMeritCampus];
+    let programList = [];
+    if (campusMeritData && Object.keys(campusMeritData).length > 0) {
+      programList = Object.entries(campusMeritData).map(([progName, yearsData]) => {
+        const meritsObj = {};
+        Object.entries(yearsData).forEach(([yr, val]) => {
+          meritsObj[yr] = typeof val === 'string' ? parseFloat(val.replace('%', '')) : val;
+        });
+        return { name: progName, merits: meritsObj };
+      });
+      if (uni.programGroups?.length > 0) {
+        const activeGroup = uni.programGroups[selectedProgramGroup];
+        if (activeGroup && activeGroup.programs) {
+          programList = programList.filter(p => activeGroup.programs.includes(p.name));
+        }
+      }
+    } else {
+      programList = uni.programs || [];
+    }
+    return programList;
+  }, [uni, selectedMeritCampus, selectedProgramGroup]);
 
   if (!uni) return null;
 
@@ -529,61 +571,67 @@ Calculate your aggregate instantly on Dakhala:
 
                   {/* Matric Marks Input Group */}
                   {activeFormula.matric > 0 && (
-                    <div className="space-y-3">
+                    <div className="space-y-3 bg-white/20 dark:bg-white/[0.01] p-4 rounded-xl border border-transparent hover:border-border/50 dark:hover:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
                       <div className="flex justify-between items-center">
-                        <label className="text-ink/80 dark:text-white/80 font-bold text-sm">Matric Marks</label>
+                        <label className="text-ink/80 dark:text-white/80 font-bold text-sm">Matric / O-Levels</label>
                         <span className="text-[#25A18E] text-sm font-bold">{activeFormula.matric}%</span>
                       </div>
-                      <div className="flex items-center gap-2 md:gap-4">
-                        <input
-                          type="number"
-                          placeholder="Obtained"
-                          value={matricObt}
-                          onChange={e => setMatricObt(e.target.value)}
-                          className="flex-1 min-w-0 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
-                        />
-                        <span className="text-ink/40 dark:text-white/40 font-bold text-lg">/</span>
-                        <input
-                          type="number"
-                          placeholder="Total"
-                          value={matricTotal}
-                          onChange={e => setMatricTotal(e.target.value)}
-                          className="w-20 sm:w-32 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors text-center"
-                        />
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50">Obtained</label>
+                          <input
+                            type="number"
+                            value={matricObt}
+                            onChange={e => setMatricObt(e.target.value)}
+                            className="w-full p-3 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-bold text-sm focus:border-[#1D2E28] focus:outline-none transition-colors"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50">Total</label>
+                          <input
+                            type="number"
+                            value={matricTotal}
+                            onChange={e => setMatricTotal(e.target.value)}
+                            className="w-full p-3 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-bold text-sm focus:border-[#1D2E28] focus:outline-none transition-colors"
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
 
                   {/* Intermediate Marks Input Group */}
                   {activeFormula.fsc > 0 && (
-                    <div className="space-y-3">
+                    <div className="space-y-3 bg-white/20 dark:bg-white/[0.01] p-4 rounded-xl border border-transparent hover:border-border/50 dark:hover:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
                       <div className="flex justify-between items-center">
-                        <label className="text-ink/80 dark:text-white/80 font-bold text-sm">Intermediate Marks</label>
+                        <label className="text-ink/80 dark:text-white/80 font-bold text-sm">Intermediate / A-Levels</label>
                         <span className="text-[#25A18E] text-sm font-bold">{activeFormula.fsc}%</span>
                       </div>
-                      <div className="flex items-center gap-2 md:gap-4">
-                        <input
-                          type="number"
-                          placeholder="Obtained"
-                          value={fscObt}
-                          onChange={e => setFscObt(e.target.value)}
-                          className="flex-1 min-w-0 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
-                        />
-                        <span className="text-ink/40 dark:text-white/40 font-bold text-lg">/</span>
-                        <input
-                          type="number"
-                          placeholder="Total"
-                          value={fscTotal}
-                          onChange={e => setFscTotal(e.target.value)}
-                          className="w-20 sm:w-32 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors text-center"
-                        />
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50">Obtained</label>
+                          <input
+                            type="number"
+                            value={fscObt}
+                            onChange={e => setFscObt(e.target.value)}
+                            className="w-full p-3 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-bold text-sm focus:border-[#1D2E28] focus:outline-none transition-colors"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50">Total</label>
+                          <input
+                            type="number"
+                            value={fscTotal}
+                            onChange={e => setFscTotal(e.target.value)}
+                            className="w-full p-3 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-bold text-sm focus:border-[#1D2E28] focus:outline-none transition-colors"
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
 
                   {/* Entry Test Input Group */}
                   {activeFormula.test > 0 && (
-                    <div className="space-y-3">
+                    <div className="space-y-3 bg-white/20 dark:bg-white/[0.01] p-4 rounded-xl border border-transparent hover:border-border/50 dark:hover:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
                       <div className="flex justify-between items-center">
                         <label className="text-ink/80 dark:text-white/80 font-bold text-sm">Entry Test Marks</label>
                         <span className="text-[#25A18E] text-sm font-bold">{activeFormula.test}%</span>
@@ -611,22 +659,25 @@ Calculate your aggregate instantly on Dakhala:
 
                       {!skipTestCalc ? (
                         <div className="space-y-3">
-                          <div className="flex items-center gap-2 md:gap-4">
-                            <input
-                              type="number"
-                              placeholder="Obtained Marks (Correct Answers)"
-                              value={correctAnswers}
-                              onChange={e => setCorrectAnswers(e.target.value)}
-                              className="flex-1 min-w-0 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
-                            />
-                            <span className="text-ink/40 dark:text-white/40 font-bold text-lg">/</span>
-                            <input
-                              type="number"
-                              placeholder="Total MCQs"
-                              value={totalMcqs}
-                              onChange={e => setTotalMcqs(e.target.value)}
-                              className="w-20 sm:w-32 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors text-center"
-                            />
+                          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                            <div className="flex flex-col gap-1.5">
+                              <label className="text-[10px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50">Correct Answers</label>
+                              <input
+                                type="number"
+                                value={correctAnswers}
+                                onChange={e => setCorrectAnswers(e.target.value)}
+                                className="w-full p-3 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-bold text-sm focus:border-[#1D2E28] focus:outline-none transition-colors"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                              <label className="text-[10px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50">Total MCQs</label>
+                              <input
+                                type="number"
+                                value={totalMcqs}
+                                onChange={e => setTotalMcqs(e.target.value)}
+                                className="w-full p-3 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-bold text-sm focus:border-[#1D2E28] focus:outline-none transition-colors"
+                              />
+                            </div>
                           </div>
                           
                           {/* Negative Marking settings in MCQs calculator */}
@@ -666,17 +717,21 @@ Calculate your aggregate instantly on Dakhala:
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          <div className="flex items-center gap-2 md:gap-4">
-                            <input
-                              type="number"
-                              placeholder="Obtained Percentage"
-                              value={testPercent}
-                              onChange={e => setTestPercent(e.target.value)}
-                              className="flex-1 min-w-0 p-3 sm:p-4 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-semibold text-sm placeholder-ink/20 dark:placeholder-white/20 focus:border-[#1D2E28] focus:outline-none transition-colors"
-                            />
-                            <span className="text-ink/40 dark:text-white/40 font-bold text-lg">/</span>
-                            <div className="w-20 sm:w-32 p-3 sm:p-4 bg-white/30 dark:bg-white/[0.01] border border-border dark:border-white/10 rounded-xl text-ink/40 dark:text-white/40 font-semibold text-sm text-center flex items-center justify-center">
-                              100
+                          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                            <div className="flex flex-col gap-1.5">
+                              <label className="text-[10px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50">Obtained %</label>
+                              <input
+                                type="number"
+                                value={testPercent}
+                                onChange={e => setTestPercent(e.target.value)}
+                                className="w-full p-3 bg-white/40 dark:bg-white/[0.02] border border-border dark:border-white/10 rounded-xl text-ink dark:text-white font-bold text-sm focus:border-[#1D2E28] focus:outline-none transition-colors"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                              <label className="text-[10px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50">Total %</label>
+                              <div className="w-full p-3 bg-white/20 dark:bg-white/[0.01] border border-border dark:border-white/10 rounded-xl text-ink/40 dark:text-white/40 font-bold text-sm text-center">
+                                100
+                              </div>
                             </div>
                           </div>
                           <button
@@ -732,37 +787,51 @@ Calculate your aggregate instantly on Dakhala:
                       const net = (corr - penalty) * (sub.weight || 1);
                       
                       return (
-                        <div key={sub.name} className="bg-white/30 dark:bg-white/[0.01] p-3.5 rounded-xl border border-border dark:border-white/5 flex flex-col gap-3 justify-between">
-                          <div className="flex justify-between items-start">
-                            <h5 className="font-bold text-sm text-ink dark:text-white">{sub.name}</h5>
-                            <p className="text-[11px] text-ink/60 dark:text-white/60 font-mono">Wt: {sub.weight || 1} | Max: {sub.mcqs}</p>
+                        <div key={sub.name} className="bg-white/30 dark:bg-white/[0.01] p-3 rounded-xl border border-border dark:border-white/5 flex flex-col justify-between hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/30 transition-all duration-300 group cursor-default">
+                          <div className="flex justify-between items-center mb-1.5">
+                            <h5 className="font-bold text-[13px] text-ink dark:text-white group-hover:text-emerald-500 transition-colors flex items-center gap-1.5 truncate pr-2">
+                              {sub.name}
+                            </h5>
+                            <div className={`px-1.5 py-0.5 rounded-full text-[10px] font-black font-mono whitespace-nowrap ${net > 0 ? 'bg-emerald-500/10 text-emerald-500' : net < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-ink/5 dark:bg-white/5 text-ink/50 dark:text-white/50'}`}>
+                              {net > 0 ? '+' : ''}{net.toFixed(2)} / {sub.mcqs * (sub.weight || 1)}
+                            </div>
                           </div>
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex flex-col">
-                              <label className="text-[11px] uppercase tracking-wider font-bold text-ink/70 dark:text-white/70 mb-1">Attempted</label>
+                          
+                          {/* Animated Progress Bar */}
+                          <div className="w-full h-1 bg-ink/5 dark:bg-white/5 rounded-full overflow-hidden mb-1">
+                            <motion.div 
+                              className={`h-full ${net > 0 ? 'bg-emerald-500' : net < 0 ? 'bg-rose-500' : 'bg-transparent'}`}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${Math.max(0, Math.min(100, (net / (sub.mcqs * (sub.weight || 1))) * 100))}%` }}
+                              transition={{ duration: 1, type: "spring", bounce: 0.2 }}
+                            />
+                          </div>
+                          <p className="text-[8.5px] uppercase tracking-widest font-bold text-ink/40 dark:text-white/40 mb-2 truncate">
+                            {sub.mcqs} MCQs • +{(sub.weight || 1).toFixed(2)}/-{(0.25 * (sub.weight || 1)).toFixed(2)} • Max {sub.mcqs * (sub.weight || 1)}
+                          </p>
+
+                          <div className="flex items-center justify-between gap-2 mt-auto">
+                            <div className="flex flex-col flex-1">
+                              <label className="text-[9px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50 mb-1">Attempted</label>
                               <input 
                                 type="number" 
                                 min="0" 
                                 max={sub.mcqs}
                                 value={data.att} 
                                 onChange={e => setSlipData({...slipData, [sub.name]: {...data, att: e.target.value}})}
-                                className="w-16 py-1.5 px-2 bg-white/50 dark:bg-black/20 border border-border dark:border-white/10 rounded-lg text-sm font-bold text-center focus:outline-none focus:border-[#1D2E28]"
+                                className="w-full py-1.5 px-2 bg-white/50 dark:bg-black/20 border border-border dark:border-white/10 rounded-lg text-xs font-bold text-center focus:outline-none focus:border-emerald-500/50 transition-colors"
                               />
                             </div>
-                            <div className="flex flex-col">
-                              <label className="text-[11px] uppercase tracking-wider font-bold text-ink/70 dark:text-white/70 mb-1">Correct</label>
+                            <div className="flex flex-col flex-1">
+                              <label className="text-[9px] uppercase tracking-widest font-bold text-ink/50 dark:text-white/50 mb-1">Correct</label>
                               <input 
                                 type="number" 
                                 min="0" 
                                 max={data.att || sub.mcqs}
                                 value={data.corr} 
                                 onChange={e => setSlipData({...slipData, [sub.name]: {...data, corr: e.target.value}})}
-                                className="w-16 py-1.5 px-2 bg-white/50 dark:bg-black/20 border border-border dark:border-white/10 rounded-lg text-sm font-bold text-center focus:outline-none focus:border-[#1D2E28]"
+                                className="w-full py-1.5 px-2 bg-white/50 dark:bg-black/20 border border-border dark:border-white/10 rounded-lg text-xs font-bold text-center focus:outline-none focus:border-emerald-500/50 transition-colors"
                               />
-                            </div>
-                            <div className="flex flex-col items-end justify-center">
-                              <span className="text-[11px] uppercase tracking-wider font-bold text-ink/50 dark:text-white/50 mb-1">Score</span>
-                              <span className={`text-lg font-black font-mono ${net >= 0 ? 'text-[#25A18E]' : 'text-rose-400'}`}>{net.toFixed(2)}</span>
                             </div>
                           </div>
                         </div>
@@ -813,41 +882,45 @@ Calculate your aggregate instantly on Dakhala:
 
               {activeTab === 'results' && (
                 <div className="space-y-8 animate-fadeIn">
-                  {/* Results Display Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white/30 dark:bg-white/[0.01] p-6 rounded-2xl border border-border dark:border-white/5">
-                    {/* Circle Gauge */}
-                    <div className="flex flex-col items-center justify-center relative py-4">
-                      <svg width="180" height="180" className="rotate-[-90deg]">
-                        <circle cx="90" cy="90" r="75" fill="transparent" stroke="currentColor" className="text-ink/5 dark:text-white/5" strokeWidth="12" />
-                        <motion.circle
-                          cx="90" cy="90" r="75" fill="transparent"
-                          stroke="#0B5D56" strokeWidth="12" strokeLinecap="round"
-                          strokeDasharray={471}
-                          animate={{ strokeDashoffset: 471 - (471 * Math.min(liveAggregate, 100)) / 100 }}
-                          transition={{ duration: 0.6, ease: "easeOut" }}
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                        <span className="text-4xl font-black text-ink dark:text-white">{liveAggregate.toFixed(2)}%</span>
-                        <span className="text-[9px] uppercase text-ink/50 dark:text-white/50 tracking-widest mt-1">Calculated Aggregate</span>
-                      </div>
+                  {/* Premium Results Display Card */}
+                  <div className="relative overflow-hidden flex flex-col items-center text-center bg-[#BEE3E1] p-8 md:p-12 rounded-3xl shadow-2xl hover:-translate-y-1 hover:shadow-emerald-500/20 transition-all duration-500 group border border-white/40">
+                    {/* Background glow effects */}
+                    <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/40 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                    
+                    <span className="relative z-10 flex items-center gap-2 text-[#1D2E28]/80 uppercase tracking-[0.2em] text-[10px] font-black mb-4 bg-white/40 px-4 py-1.5 rounded-full border border-white/50 backdrop-blur-sm shadow-sm">
+                      <Award className="w-3.5 h-3.5 text-[#0B5D56]" />
+                      Calculated Aggregate
+                    </span>
+                    
+                    <div className="relative z-10 flex items-baseline justify-center gap-1 mb-8">
+                      <motion.h2 
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", bounce: 0.5 }}
+                        className="text-7xl md:text-8xl font-black text-[#1D2E28] tracking-tighter drop-shadow-md"
+                      >
+                        {liveAggregate.toFixed(2)}
+                      </motion.h2>
+                      <span className="text-4xl md:text-5xl font-bold text-[#1D2E28]/50">%</span>
                     </div>
-
-                    {/* Breakdown details */}
-                    <div className="space-y-4">
-                      <h4 className="font-extrabold text-sm text-ink dark:text-white border-b border-border dark:border-white/10 pb-2">Contribution Breakdown</h4>
-                      <div className="space-y-3 text-xs text-ink/70 dark:text-white/70">
-                        <div className="flex justify-between items-center">
-                          <span>Matric / O-Level ({activeFormula.matric}%)</span>
-                          <span className="font-bold text-ink dark:text-white">{(parseFloat(matricPercent || 0) * (activeFormula.matric / 100)).toFixed(2)}%</span>
+                    
+                    <div className="relative z-10 w-full max-w-lg bg-white/30 p-5 rounded-2xl backdrop-blur-md border border-white/50 shadow-sm group-hover:bg-white/40 transition-colors duration-500">
+                      <p className="text-[9px] text-[#1D2E28]/50 uppercase tracking-[0.2em] font-bold mb-4 border-b border-[#1D2E28]/10 pb-2">Contribution Breakdown</p>
+                      <div className="flex justify-between items-center gap-2 divide-x divide-[#1D2E28]/10">
+                        <div className="flex flex-col items-center flex-1 hover:scale-105 transition-transform duration-300">
+                          <span className="text-[10px] text-[#0B5D56] font-bold mb-1">{activeFormula.matric}%</span>
+                          <span className="text-xs text-[#1D2E28]/50 uppercase tracking-widest font-bold mb-1">Matric</span>
+                          <span className="text-[#1D2E28] font-black text-sm md:text-base">{(parseFloat(matricPercent || 0) * (activeFormula.matric / 100)).toFixed(2)}%</span>
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span>Intermediate / A-Level ({activeFormula.fsc}%)</span>
-                          <span className="font-bold text-ink dark:text-white">{(parseFloat(fscPercent || 0) * (activeFormula.fsc / 100)).toFixed(2)}%</span>
+                        <div className="flex flex-col items-center flex-1 hover:scale-105 transition-transform duration-300">
+                          <span className="text-[10px] text-[#0B5D56] font-bold mb-1">{activeFormula.fsc}%</span>
+                          <span className="text-xs text-[#1D2E28]/50 uppercase tracking-widest font-bold mb-1">Inter</span>
+                          <span className="text-[#1D2E28] font-black text-sm md:text-base">{(parseFloat(fscPercent || 0) * (activeFormula.fsc / 100)).toFixed(2)}%</span>
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span>Entry Test ({activeFormula.test}%)</span>
-                          <span className="font-bold text-ink dark:text-white">{(parseFloat(testPercent || 0) * (activeFormula.test / 100)).toFixed(2)}%</span>
+                        <div className="flex flex-col items-center flex-1 hover:scale-105 transition-transform duration-300">
+                          <span className="text-[10px] text-[#0B5D56] font-bold mb-1">{activeFormula.test}%</span>
+                          <span className="text-xs text-[#1D2E28]/50 uppercase tracking-widest font-bold mb-1">Test</span>
+                          <span className="text-[#1D2E28] font-black text-sm md:text-base">{(parseFloat(testPercent || 0) * (activeFormula.test / 100)).toFixed(2)}%</span>
                         </div>
                       </div>
                     </div>
@@ -878,26 +951,7 @@ Calculate your aggregate instantly on Dakhala:
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto pr-1">
                       {(() => {
-                        const campusMeritData = uni.meritData?.campuses?.[selectedMeritCampus];
-                        let programList = [];
-                        if (campusMeritData && Object.keys(campusMeritData).length > 0) {
-                          programList = Object.entries(campusMeritData).map(([progName, yearsData]) => {
-                            const meritsObj = {};
-                            Object.entries(yearsData).forEach(([yr, val]) => {
-                              meritsObj[yr] = typeof val === 'string' ? parseFloat(val.replace('%', '')) : val;
-                            });
-                            return { name: progName, merits: meritsObj };
-                          });
-                          
-                          if (uni.programGroups?.length > 0) {
-                            const activeGroup = uni.programGroups[selectedProgramGroup];
-                            if (activeGroup && activeGroup.programs) {
-                              programList = programList.filter(p => activeGroup.programs.includes(p.name));
-                            }
-                          }
-                        } else {
-                          programList = uni.programs || [];
-                        }
+                        const programList = eligiblePrograms;
 
                         if (programList.length === 0) {
                           return (
@@ -950,10 +1004,10 @@ Calculate your aggregate instantly on Dakhala:
                   <div className="flex flex-col sm:flex-row gap-4 border-t border-border dark:border-white/10 pt-6">
                     <button
                       type="button"
-                      onClick={handleCopy}
+                      onClick={handleDownloadImage}
                       className="flex-1 py-3 px-4 bg-white/30 dark:bg-[#1e1e1e] border border-border dark:border-white/10 hover:border-[#1D2E28] rounded-xl font-bold text-xs uppercase tracking-wider text-ink dark:text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      {copied ? <><Check className="w-4 h-4 text-emerald-400" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy Scorecard</>}
+                      <Download className="w-4 h-4" /> Download Image
                     </button>
                     <button
                       type="button"
@@ -1139,6 +1193,49 @@ Calculate your aggregate instantly on Dakhala:
         </div>
       </div>
 
+      {/* FAQ Section */}
+      <div className="w-full max-w-[900px] mx-auto px-4 xl:px-8 mb-24 mt-4">
+        <h3 className="text-2xl font-black text-ink dark:text-white mb-6">Frequently Asked Questions — {uni.shortName} Aggregate</h3>
+        <div className="space-y-4">
+          {[
+            {
+              q: `What is the aggregate formula for ${uni.shortName}?`,
+              a: `The aggregate formula for ${uni.name} varies by program, but generally depends on ${activeFormula.matric > 0 ? `Matric (${activeFormula.matric}%)` : ''} ${activeFormula.fsc > 0 ? `, Intermediate (${activeFormula.fsc}%)` : ''} and the ${uni.entryTest} (${activeFormula.test}%). You can use our calculator above to compute exact percentages for specific programs like A-Levels or Gap Year students.`
+            },
+            {
+              q: `What is negative marking in ${uni.entryTest}?`,
+              a: uni.testPattern?.tags?.includes('Negative Marking') || uni.shortName === 'FAST-NUCES'
+                ? `Yes, the ${uni.entryTest} has negative marking (usually -0.25 for every incorrect answer). It is highly advised not to guess blindly.`
+                : `Generally, ${uni.entryTest} does not have negative marking, but please refer to the official ${uni.shortName} admission guidelines for your specific year.`
+            },
+            {
+              q: uni.campuses && uni.campuses.length > 1 
+                ? `Do all ${uni.shortName} campuses have the same merit cutoff?`
+                : `What is the estimated safe aggregate for ${uni.shortName}?`,
+              a: uni.campuses && uni.campuses.length > 1 
+                ? `No, cutoffs vary significantly between campuses. For instance, the main campus typically has a higher merit compared to regional campuses.`
+                : `A safe aggregate depends on the program. For highly competitive fields like CS or Software Engineering, aim for above 75-80%. Check our feasible eligibilities section for exact 2025 cutoffs.`
+            },
+            {
+              q: `Is FSc marks or entry test more important for ${uni.shortName}?`,
+              a: activeFormula.test > activeFormula.fsc 
+                ? `The ${uni.entryTest} is substantially more important as it carries ${activeFormula.test}% weightage compared to just ${activeFormula.fsc}% for your FSc/A-Level equivalence.`
+                : `Your previous academic record (FSc/A-Levels) carries ${activeFormula.fsc}% weight, making it highly crucial for securing admission at ${uni.shortName}.`
+            }
+          ].map((faq, i) => (
+            <details key={i} className="group bg-white/50 dark:bg-[#0A1128] border border-border/50 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm [&_summary::-webkit-details-marker]:hidden">
+              <summary className="p-5 font-bold text-ink dark:text-white cursor-pointer list-none flex justify-between items-center transition-colors hover:bg-white/80 dark:hover:bg-white/[0.04]">
+                {faq.q}
+                <ChevronDown className="w-5 h-5 text-ink/40 dark:text-white/40 group-open:rotate-180 transition-transform duration-300" />
+              </summary>
+              <div className="p-5 pt-0 text-ink/70 dark:text-white/70 text-sm leading-relaxed border-t border-border/50 dark:border-white/5 mt-1 pt-4 bg-white/30 dark:bg-transparent">
+                {faq.a}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
       {/* Guide Modal */}
       <AnimatePresence>
         {isGuideOpen && (
@@ -1239,6 +1336,7 @@ Calculate your aggregate instantly on Dakhala:
           programGroup={uni.programGroups?.[selectedProgramGroup]?.groupName}
           campus={selectedMeritCampus}
           edSystem={selectedEdSystem === 'a-level' ? 'A-Levels/O-Levels' : 'FSc/Matric'}
+          eligiblePrograms={eligiblePrograms}
         />
       </div>
     </div>

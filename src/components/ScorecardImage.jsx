@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react';
-import { Target, GraduationCap } from 'lucide-react';
+import { Target, GraduationCap, CheckCircle2, AlertCircle, XCircle } from 'lucide-react';
 import { getUniversityLogo } from '../data/universities';
 
-const ScorecardImage = forwardRef(({ uni, aggregate, programGroup, campus, edSystem }, ref) => {
+const ScorecardImage = forwardRef(({ uni, aggregate, programGroup, campus, edSystem, eligiblePrograms = [] }, ref) => {
   if (!uni) return null;
 
   return (
@@ -55,16 +55,52 @@ const ScorecardImage = forwardRef(({ uni, aggregate, programGroup, campus, edSys
             <Target className="w-6 h-6 text-[#25A18E]" />
             Feasibility Outlook
           </h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="bg-emerald-500/10 p-6 rounded-2xl border border-emerald-500/20">
-              <h4 className="text-lg font-bold text-[#1e1e1e]">Data-Driven Insights</h4>
-              <p className="text-sm text-emerald-600 font-bold mt-2">Based on precise historical merit analytics to estimate your success chances.</p>
+          {eligiblePrograms.length === 0 ? (
+            <div className="bg-[#f8f9fa] p-6 rounded-2xl border border-[#e5e7eb] text-center">
+              <p className="text-[#6b7280] font-bold tracking-widest uppercase">No program data available for this campus.</p>
             </div>
-            <div className="bg-blue-500/10 p-6 rounded-2xl border border-blue-500/20">
-              <h4 className="text-lg font-bold text-[#1e1e1e]">Next Steps</h4>
-              <p className="text-sm text-blue-600 font-bold mt-2">Compare your score with detailed cutoff drops for all programs on the site.</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-4">
+              {eligiblePrograms.slice(0, 6).map(p => {
+                const cutoff = p.merits[2025] || 70.0;
+                const diff = parseFloat(aggregate) - cutoff;
+                let badgeCls = "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
+                let statusText = "Likely";
+                let StatusIcon = CheckCircle2;
+                if (diff < -2.0) {
+                  badgeCls = "bg-rose-500/10 text-rose-600 border-rose-500/20";
+                  statusText = "Tough";
+                  StatusIcon = XCircle;
+                } else if (diff < 1.0) {
+                  badgeCls = "bg-amber-500/10 text-amber-600 border-amber-500/20";
+                  statusText = "Borderline";
+                  StatusIcon = AlertCircle;
+                }
+                return (
+                  <div key={p.name} className="bg-white p-4 rounded-xl border border-[#e5e7eb] shadow-sm flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-[#1e1e1e] text-lg">{p.name}</p>
+                      <p className="text-xs text-[#6b7280] font-bold mt-1">2025 Cutoff: {cutoff}%</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1.5">
+                      <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-md border ${badgeCls} flex items-center gap-1`}>
+                        <StatusIcon className="w-3 h-3" />
+                        {statusText}
+                      </span>
+                      <span className={`text-sm font-bold font-mono ${diff >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                        {diff >= 0 ? '+' : ''}{diff.toFixed(2)}%
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+              {eligiblePrograms.length > 6 && (
+                <div className="col-span-2 text-center text-sm text-[#6b7280] font-bold mt-2 uppercase tracking-widest">
+                  + {eligiblePrograms.length - 6} more programs...
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
 
       </div>
