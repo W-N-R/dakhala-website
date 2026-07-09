@@ -335,6 +335,9 @@ Calculate your aggregate instantly on Dakhala:
       link.download = `${uni.shortName}_Admission_Scorecard.png`;
       link.href = dataUrl;
       link.click();
+
+      // Open WhatsApp web so they can drag-and-drop the downloaded image!
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(generateShareText())}`, '_blank');
       
     } catch (err) {
       console.error('Error generating image', err);
@@ -1228,7 +1231,7 @@ Calculate your aggregate instantly on Dakhala:
       </AnimatePresence>
 
       {/* Hidden Scorecard for Image Generation */}
-      <div className="fixed top-0 left-0 -z-50 opacity-0 pointer-events-none" style={{ transform: 'scale(1)' }}>
+      <div className="absolute top-0 left-[-9999px]">
         <ScorecardImage 
           ref={scorecardRef}
           uni={uni}
