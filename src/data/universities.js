@@ -1550,6 +1550,7 @@ export const getUniversityLogo = (uniId) => {
     'muet': 'muet.webp',
     'ist': 'ist.webp',
     'fast': 'fast nuces.webp',
+    'fast-nuces': 'fast nuces.webp',
     'lums': 'lums.webp',
     'iba': 'iba.webp',
     'habib': 'habib university.webp',

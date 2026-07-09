@@ -299,13 +299,22 @@ Calculate your aggregate instantly on Dakhala:
       setIsGenerating(true);
       await new Promise(r => setTimeout(r, 100)); // wait for render
       if (!scorecardRef.current) return;
-      const dataUrl = await toPng(scorecardRef.current, { quality: 1.0, pixelRatio: 2, cacheBust: true });
+      const dataUrl = await toPng(scorecardRef.current, { 
+        quality: 1.0, 
+        pixelRatio: 2, 
+        cacheBust: true,
+        useCORS: true,
+        skipFonts: true // Sometimes external fonts block html-to-image
+      });
       const link = document.createElement('a');
       link.download = `${uni.shortName}_Admission_Scorecard.png`;
       link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     } catch (err) {
       console.error('Error downloading image', err);
+      alert('Failed to download scorecard image. Please try again.');
     } finally {
       setIsGenerating(false);
     }
@@ -482,19 +491,19 @@ Calculate your aggregate instantly on Dakhala:
             className="flat-card p-6 md:p-8 relative flex flex-col space-y-6 text-ink dark:text-white"
           >
             {/* Top Tab Bar (exact style as screenshot) */}
-            <div className="flex border-b border-border/70 dark:border-white/10 select-none pb-0 relative overflow-x-auto">
+            <div className="flex flex-nowrap overflow-x-auto scrollbar-hide border-b border-border/70 dark:border-white/10 select-none pb-0 relative">
               {[ ...(uni.slug === 'fast-nuces' ? ['Test Marks'] : []), 'Merit Calc', 'Results', 'Merit', 'Pattern'].map((tab) => (
                 <button
                   key={tab}
                   type="button"
                   onClick={() => setActiveTab(tab.toLowerCase())}
-                  className={`flex-1 pb-3 md:pb-4 text-xs md:text-sm font-bold uppercase tracking-wider transition-all relative text-center ${
+                  className={`whitespace-nowrap flex-shrink-0 px-4 md:px-0 md:flex-1 pb-3 md:pb-4 text-[11px] md:text-sm font-bold uppercase tracking-wider transition-all relative text-center ${
                     activeTab === tab.toLowerCase() ? 'text-ink dark:text-white' : 'text-ink/40 dark:text-white/40 hover:text-ink/75 dark:hover:text-white/70'
                   }`}
                 >
                   {tab}
                   {activeTab === tab.toLowerCase() && (
-                    <motion.div layoutId="calcTabIndicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1D2E28]" />
+                    <motion.div layoutId="calcTabIndicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1D2E28] dark:bg-[#C1A05B]" />
                   )}
                 </button>
               ))}
