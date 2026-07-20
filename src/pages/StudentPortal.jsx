@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useAuthStore } from '../store/useAuthStore';
 import EduAnimation from '../components/EduAnimation';
 import Tilt from 'react-parallax-tilt';
-import { loginWithEmail, registerWithEmail, logout } from '../lib/firebase';
+import { loginWithEmail, registerWithEmail, logout, resetPassword } from '../lib/firebase';
 import { 
   GraduationCap, User, Mail, Lock, LogOut, Trash2, 
   Calculator, Calendar, MapPin, TrendingUp, AlertCircle, Check, ShieldAlert
@@ -71,6 +71,29 @@ export default function StudentPortal() {
       clearUser();
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setErrorMsg('Please enter your email address first.');
+      return;
+    }
+    setIsSubmitting(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+    try {
+      await resetPassword(email);
+      setSuccessMsg('Password reset email sent! Check your inbox.');
+    } catch (err) {
+      console.error(err);
+      if (err.message.includes("not configured")) {
+        setErrorMsg("Firebase is not configured yet. Please add your credentials to .env.local");
+      } else {
+        setErrorMsg(err.message.replace("Firebase: ", ""));
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -194,6 +217,18 @@ export default function StudentPortal() {
                       required
                     />
                   </div>
+                  
+                  {isLoginView && (
+                    <div className="flex justify-end mt-1">
+                      <button
+                        type="button"
+                        onClick={handleForgotPassword}
+                        className="text-xs text-muted hover:text-gold transition-colors underline"
+                      >
+                        Forgot Password?
+                      </button>
+                    </div>
+                  )}
 
                   <button 
                     type="submit" 

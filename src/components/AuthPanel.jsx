@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithGoogle, logout, auth, registerWithEmail, loginWithEmail, onAuthStateChanged } from '../lib/firebase';
+import { signInWithGoogle, logout, auth, registerWithEmail, loginWithEmail, onAuthStateChanged, resetPassword } from '../lib/firebase';
 import { useAuthStore } from '../store/useAuthStore';
-import { LogIn, LogOut, Shield, GraduationCap, AlertCircle, Mail, Lock } from 'lucide-react';
+import { LogIn, LogOut, Shield, GraduationCap, AlertCircle, Mail, Lock, Check } from 'lucide-react';
 
 
 export default function AuthPanel({ onNavigate }) {
@@ -13,6 +13,7 @@ export default function AuthPanel({ onNavigate }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function AuthPanel({ onNavigate }) {
   const handleGoogleLogin = async () => {
     try {
       setErrorMsg('');
+      setSuccessMsg('');
       await signInWithGoogle();
     } catch (err) {
       console.error(err);
@@ -50,6 +52,7 @@ export default function AuthPanel({ onNavigate }) {
     
     setIsSubmitting(true);
     setErrorMsg('');
+    setSuccessMsg('');
     try {
       if (isLoginView) {
         await loginWithEmail(email, password);
@@ -70,6 +73,29 @@ export default function AuthPanel({ onNavigate }) {
 
   const handleLogout = async () => {
     await logout();
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setErrorMsg('Please enter your email address first.');
+      return;
+    }
+    setIsSubmitting(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+    try {
+      await resetPassword(email);
+      setSuccessMsg('Password reset email sent! Check your inbox.');
+    } catch (err) {
+      console.error(err);
+      if (err.message.includes("not configured")) {
+        setErrorMsg("Firebase is not configured yet. Please add your credentials to .env.local");
+      } else {
+        setErrorMsg(err.message.replace("Firebase: ", ""));
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const goToPortal = (path) => {
@@ -131,14 +157,23 @@ export default function AuthPanel({ onNavigate }) {
             </button>
           </form>
 
-          <div className="flex items-center justify-between text-xs text-muted">
+          <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-muted gap-2">
             <button 
               type="button" 
-              onClick={() => { setIsLoginView(!isLoginView); setErrorMsg(''); }}
+              onClick={() => { setIsLoginView(!isLoginView); setErrorMsg(''); setSuccessMsg(''); }}
               className="hover:text-gold transition-colors underline"
             >
               {isLoginView ? 'Need an account? Register' : 'Already have an account? Login'}
             </button>
+            {isLoginView && (
+              <button 
+                type="button" 
+                onClick={handleForgotPassword}
+                className="hover:text-gold transition-colors underline"
+              >
+                Forgot Password?
+              </button>
+            )}
           </div>
 
           <div className="relative flex items-center py-2">
@@ -165,6 +200,13 @@ export default function AuthPanel({ onNavigate }) {
             <div className="mt-2 p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-xs flex items-start gap-2 text-left">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span className="break-all">{errorMsg}</span>
+            </div>
+          )}
+          
+          {successMsg && (
+            <div className="mt-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs flex items-start gap-2 text-left border border-emerald-500/20">
+              <Check className="w-4 h-4 shrink-0 mt-0.5" />
+              <span className="break-all">{successMsg}</span>
             </div>
           )}
         </div>

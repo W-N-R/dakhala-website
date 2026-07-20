@@ -6,6 +6,7 @@ import {
   signOut as firebaseSignOut, 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   onAuthStateChanged as firebaseOnAuthStateChanged
 } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
@@ -109,3 +110,19 @@ export const logout = async () => {
   }
   return firebaseSignOut(auth);
 };
+
+export const resetPassword = async (email) => {
+  if (!isFirebaseConfigured || !auth) {
+    throw new Error("Firebase is not configured yet. Please add your credentials to .env.local");
+  }
+  if (!email) {
+    throw new Error("Please enter your email address to reset your password.");
+  }
+  try {
+    await sendPasswordResetEmail(auth, email);
+  } catch (error) {
+    console.error("Error sending password reset email", error);
+    throw error;
+  }
+};
+

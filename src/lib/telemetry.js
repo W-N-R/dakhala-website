@@ -95,17 +95,17 @@ export const getAnalyticsSummary = async () => {
       stdDev = Math.round(Math.sqrt(avgSqDiff) * 100) / 100;
     }
 
-    // Daily Reach Trend (past 7 days)
+    // Daily Reach Trend (past 30 days)
     const dailyReach = {};
     const dailyCalcs = {};
-    const last7Days = [];
+    const trendDays = [];
     const now = new Date();
     
-    for (let i = 6; i >= 0; i--) {
+    for (let i = 29; i >= 0; i--) {
       const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
       const dayStr = d.toDateString();
       const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      last7Days.push({ dateStr: dayStr, label });
+      trendDays.push({ dateStr: dayStr, label });
       dailyReach[dayStr] = 0;
       dailyCalcs[dayStr] = 0;
     }
@@ -124,7 +124,7 @@ export const getAnalyticsSummary = async () => {
       }
     });
 
-    const reachTrend = last7Days.map(day => ({
+    const reachTrend = trendDays.map(day => ({
       name: day.label,
       views: dailyReach[day.dateStr] || 0,
       calculations: dailyCalcs[day.dateStr] || 0

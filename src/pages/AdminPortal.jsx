@@ -313,10 +313,11 @@ export default function AdminPortal() {
 
               {/* Traffic Analysis Chart */}
               <div className="bg-white dark:bg-[#0C132C] border border-border dark:border-white/10 rounded-3xl p-5 shadow-sm">
-                <h3 className="text-xs font-black text-ink dark:text-white uppercase tracking-wider mb-3">Daily Traffic Analysis (Past 7 Days)</h3>
-                <div className="h-60 sm:h-72 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={analytics.reachTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <h3 className="text-xs font-black text-ink dark:text-white uppercase tracking-wider mb-3">Daily Traffic Analysis (Past 30 Days)</h3>
+                <div className="overflow-x-auto overflow-y-hidden w-full pb-2">
+                  <div className="h-60 sm:h-72 min-w-[800px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={analytics.reachTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#7B61FF" stopOpacity={0.2}/>
@@ -328,7 +329,7 @@ export default function AdminPortal() {
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-                      <XAxis dataKey="name" stroke="#94A3B8" fontSize={9} tickLine={false} />
+                      <XAxis dataKey="name" stroke="#94A3B8" fontSize={9} tickLine={false} interval={1} />
                       <YAxis stroke="#94A3B8" fontSize={9} tickLine={false} />
                       <RechartsTooltip content={<CustomTooltip />} />
                       <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: '10px', fontWeight: 'bold' }} />
@@ -336,6 +337,7 @@ export default function AdminPortal() {
                       <Area type="monotone" name="Calculations" dataKey="calculations" stroke="#00FFB3" strokeWidth={2} fillOpacity={1} fill="url(#colorCalcs)" />
                     </AreaChart>
                   </ResponsiveContainer>
+                  </div>
                 </div>
               </div>
 
