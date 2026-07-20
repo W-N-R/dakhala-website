@@ -77,7 +77,9 @@ export const getAnalyticsSummary = async () => {
     const conversionRate = totalViews > 0 ? ((totalCalcs / totalViews) * 100).toFixed(2) : 0;
     
     // Calculate distribution statistics for calculations
-    const scores = calcs.map(c => c.aggregate);
+    const scores = calcs
+      .map(c => parseFloat(c.aggregate))
+      .filter(s => !isNaN(s) && s >= 0 && s <= 100);
     let mean = 0;
     let median = 0;
     let stdDev = 0;
