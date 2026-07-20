@@ -9,7 +9,7 @@ import Campus3DModel from '../components/Campus3DModel';
 // Custom Label for the last data point
 const CustomizedLabel = (props) => {
   const { x, y, value, index, isRank } = props;
-  const isLast = index === 6; // 7-year chart index 6 is the last (2025)
+  const isLast = index === 7; // 8-year chart index 7 is the last (2026)
   if (isLast) {
     return (
       <g>
@@ -88,7 +88,7 @@ export default function MeritTracker() {
       const progObj = activePrograms.find(p => p.name === selectedProgram);
       if (progObj) {
         const merits7 = get7YearMerits(progObj);
-        const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+        const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
         const formatted = years.map(year => ({
           year: year.toString(),
           merit: merits7[year]
@@ -196,8 +196,8 @@ export default function MeritTracker() {
         <div className="lg:col-span-2 w-full">
           <Tilt tiltMaxAngleX={3} tiltMaxAngleY={3} className="bg-white dark:bg-[#0C132C] border border-border dark:border-white/10 rounded-2xl p-5 flex flex-col space-y-4 shadow-sm">
             <div>
-              <h3 className="font-bold text-ink dark:text-white text-xs uppercase tracking-wider">7-Year Merit Graph: {selectedProgram}</h3>
-              <p className="text-[11px] text-muted dark:text-gray-400">Cutoff score trends (2019 to 2025) with AI estimations.</p>
+              <h3 className="font-bold text-ink dark:text-white text-xs uppercase tracking-wider">Historical Merit Graph: {selectedProgram}</h3>
+              <p className="text-[11px] text-muted dark:text-gray-400">Cutoff score trends with AI estimations.</p>
             </div>
 
             <div className="h-[280px] w-full pr-2 text-ink dark:text-white">

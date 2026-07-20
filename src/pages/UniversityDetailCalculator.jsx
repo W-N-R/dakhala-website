@@ -222,7 +222,7 @@ export default function UniversityDetailCalculator() {
           Object.entries(yearsData).forEach(([yr, val]) => {
             meritsObj[yr] = typeof val === 'string' ? parseFloat(val.replace('%', '')) : val;
           });
-          const cutoff = meritsObj[2025] || 70.0;
+          const cutoff = meritsObj[2026] || meritsObj[2025] || 70.0;
           const diff = liveAggregate - cutoff;
           let statusText = 'Likely Admission';
           if (diff < -2.0) statusText = 'Tough Chance';
@@ -233,7 +233,7 @@ export default function UniversityDetailCalculator() {
     } else if (uni.programs?.length > 0) {
       campusLines += '\nDepartment Admission Chances:\n';
       uni.programs.forEach(p => {
-        const cutoff = p.merits?.[2025] || 70.0;
+        const cutoff = p.merits?.[2026] || p.merits?.[2025] || 70.0;
         const diff = liveAggregate - cutoff;
         let statusText = 'Likely Admission';
         if (diff < -2.0) statusText = 'Tough Chance';
@@ -972,7 +972,7 @@ Calculate your aggregate instantly on Dakhala:
                         }
 
                         return programList.map(p => {
-                          const cutoff = p.merits[2025] || 70.0;
+                          const cutoff = p.merits[2026] || p.merits[2025] || 70.0;
                           const diff = liveAggregate - cutoff;
                           let badgeCls = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
                           let statusText = "Likely";
@@ -991,7 +991,7 @@ Calculate your aggregate instantly on Dakhala:
                               <div className="flex items-center justify-between">
                                 <div>
                                   <p className="font-bold text-xs text-ink dark:text-white font-sans">{p.name}</p>
-                                  <p className="text-[10px] text-ink/40 dark:text-white/40 font-sans">2025 Cutoff: {cutoff}%</p>
+                                  <p className="text-[10px] text-ink/40 dark:text-white/40 font-sans">Latest Cutoff: {cutoff}%</p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                   <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${badgeCls} flex items-center gap-1 font-sans`}>
@@ -1062,32 +1062,55 @@ Calculate your aggregate instantly on Dakhala:
                     )}
                   </div>
 
-                  {uni.meritData?.campuses?.[selectedMeritCampus] && Object.keys(uni.meritData.campuses[selectedMeritCampus]).length > 0 ? (
-                    <div className="overflow-hidden rounded-xl border border-border dark:border-white/10 bg-white/30 dark:bg-white/[0.01]">
-                      <table className="w-full text-left border-collapse text-xs">
-                        <thead>
-                          <tr className="bg-cloudy/50 dark:bg-white/[0.02] text-ink/50 dark:text-white/50 font-bold border-b border-border dark:border-white/10 uppercase text-[10px] tracking-wider">
-                            <th className="p-3.5">Program</th>
-                            <th className="p-3.5 text-center">2025 Closing</th>
-                            <th className="p-3.5 text-center">2024 Closing</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {Object.entries(uni.meritData.campuses[selectedMeritCampus]).map(([prog, years], idx) => (
-                            <tr key={prog} className={`border-b border-border/50 dark:border-white/5 last:border-none ${idx % 2 === 0 ? 'bg-white/10 dark:bg-white/[0.01]' : 'bg-transparent'}`}>
-                              <td className="p-3.5 font-bold text-ink dark:text-white">{prog}</td>
-                              <td className="p-3.5 text-center text-blue-400 font-mono font-bold">{years[2025] || '--'}</td>
-                              <td className="p-3.5 text-center text-ink/40 dark:text-white/40 font-mono">{years[2024] || '--'}</td>
+                  {(() => {
+                    const campusData = uni.meritData?.campuses?.[selectedMeritCampus];
+                    if (!campusData || Object.keys(campusData).length === 0) {
+                      return (
+                        <div className="text-center py-10 text-ink/30 dark:text-white/30 border border-dashed border-border dark:border-white/10 rounded-xl bg-white/20 dark:bg-white/[0.01]">
+                          Historical merit records are not available for the selected options.
+                        </div>
+                      );
+                    }
+                    
+                    const allYears = new Set();
+                    Object.values(campusData).forEach(yearsObj => {
+                      Object.keys(yearsObj).forEach(y => allYears.add(parseInt(y)));
+                    });
+                    const sortedYears = Array.from(allYears).sort((a, b) => b - a);
+
+                    return (
+                      <div className="overflow-x-auto rounded-xl border border-border dark:border-white/10 bg-white/30 dark:bg-white/[0.01] custom-scrollbar">
+                        <table className="w-full text-left border-collapse text-xs min-w-max">
+                          <thead>
+                            <tr className="bg-cloudy dark:bg-[#0A1128] text-ink/50 dark:text-white/50 font-bold border-b border-border dark:border-white/10 uppercase text-[10px] tracking-wider">
+                              <th className="p-3.5 sticky left-0 bg-cloudy dark:bg-[#0A1128] z-10 border-r border-border dark:border-white/10 drop-shadow-[2px_0_2px_rgba(0,0,0,0.05)]">Program</th>
+                              {sortedYears.map(yr => (
+                                <th key={yr} className="p-3.5 text-center">{yr} Closing</th>
+                              ))}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <div className="text-center py-10 text-ink/30 dark:text-white/30 border border-dashed border-border dark:border-white/10 rounded-xl bg-white/20 dark:bg-white/[0.01]">
-                      Historical merit records are not available for the selected options.
-                    </div>
-                  )}
+                          </thead>
+                          <tbody>
+                            {Object.entries(campusData).map(([prog, years], idx) => {
+                              const rowBg = idx % 2 === 0 ? 'bg-white dark:bg-[#0C132C]' : 'bg-cloudy/30 dark:bg-white/[0.02]';
+                              const stickyBg = idx % 2 === 0 ? 'bg-white dark:bg-[#0C132C]' : 'bg-[#FAFAFA] dark:bg-[#0E1530]';
+                              return (
+                                <tr key={prog} className={`border-b border-border/50 dark:border-white/5 last:border-none ${rowBg}`}>
+                                  <td className={`p-3.5 font-bold text-ink dark:text-white sticky left-0 z-10 border-r border-border dark:border-white/10 drop-shadow-[2px_0_2px_rgba(0,0,0,0.05)] ${stickyBg}`}>
+                                    {prog}
+                                  </td>
+                                  {sortedYears.map((yr, i) => (
+                                    <td key={yr} className={`p-3.5 text-center font-mono ${i === 0 ? 'text-blue-400 font-bold' : 'text-ink/60 dark:text-white/60'}`}>
+                                      {years[yr] || '--'}
+                                    </td>
+                                  ))}
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
 
@@ -1224,7 +1247,7 @@ Calculate your aggregate instantly on Dakhala:
                 : `What is the estimated safe aggregate for ${uni.shortName}?`,
               a: uni.campuses && uni.campuses.length > 1 
                 ? `No, cutoffs vary significantly between campuses. For instance, the main campus typically has a higher merit compared to regional campuses.`
-                : `A safe aggregate depends on the program. For highly competitive fields like CS or Software Engineering, aim for above 75-80%. Check our feasible eligibilities section for exact 2025 cutoffs.`
+                : `A safe aggregate depends on the program. For highly competitive fields like CS or Software Engineering, aim for above 75-80%. Check our feasible eligibilities section for exact recent cutoffs.`
             },
             {
               q: `Is FSc marks or entry test more important for ${uni.shortName}?`,

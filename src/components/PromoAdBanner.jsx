@@ -11,7 +11,7 @@ const PROMO_ADS = [
     title: 'Crack NET, ECAT & MDCAT with 95% Success Rate',
     desc: 'Access video lectures, past papers, live test sessions, and HEC standard prep tools.',
     actionText: 'Join Academy',
-    url: 'https://wa.me/923039426734?text=Assalam%20o%20Alaikum!%20I%20visited%20Dakhala%20Admissions%20Portal%20and%20need%20guidance%20regarding%20university%20admissions.%20Please%20assist%20me.',
+    url: 'https://wa.me/923395066625?text=Assalam%20o%20Alaikum!%20I%20visited%20Dakhala%20Admissions%20Portal%20and%20need%20guidance%20regarding%20university%20admissions.%20Please%20assist%20me.',
     icon: GraduationCap,
     colorClasses: 'from-amber-500 to-orange-600',
     accentColor: '#F59E0B'
@@ -33,7 +33,7 @@ const PROMO_ADS = [
     title: 'Struggling with Aggregate calculations or Equivalence?',
     desc: 'Book a 1-on-1 counseling session on WhatsApp with HEC & IBCC experts.',
     actionText: 'Chat on WhatsApp',
-    url: 'https://wa.me/923039426734?text=Assalam%20o%20Alaikum!%20I%20visited%20Dakhala%20Admissions%20Portal%20and%20need%20guidance%20regarding%20university%20admissions.%20Please%20assist%20me.',
+    url: 'https://wa.me/923395066625?text=Assalam%20o%20Alaikum!%20I%20visited%20Dakhala%20Admissions%20Portal%20and%20need%20guidance%20regarding%20university%20admissions.%20Please%20assist%20me.',
     icon: MessageSquare,
     colorClasses: 'from-emerald-500 to-teal-600',
     accentColor: '#10B981'

@@ -171,7 +171,7 @@ export default function App() {
         {/* Floating WhatsApp Advisory Widget */}
         <div className="fixed bottom-6 right-6 z-50 group">
           <a
-            href="https://wa.me/923039426734?text=Assalam%20o%20Alaikum!%20I%20visited%20Dakhala%20Admissions%20Portal%20and%20need%20guidance%20regarding%20university%20admissions.%20Please%20assist%20me."
+            href="https://wa.me/923395066625?text=Assalam%20o%20Alaikum!%20I%20visited%20Dakhala%20Admissions%20Portal%20and%20need%20guidance%20regarding%20university%20admissions.%20Please%20assist%20me."
             onClick={() => logAction('whatsapp_click')}
             target="_blank"
             rel="nofollow noopener noreferrer"
@@ -298,7 +298,7 @@ export default function App() {
                 Facing issues with aggregates or equivalence? Get immediate guidance from our expert admission counselors.
               </p>
               <a
-                href="https://wa.me/923039426734?text=Assalam%20o%20Alaikum!%20I%20visited%20Dakhala%20Admissions%20Portal%20and%20need%20guidance%20regarding%20university%20admissions.%20Please%20assist%20me."
+                href="https://wa.me/923395066625?text=Assalam%20o%20Alaikum!%20I%20visited%20Dakhala%20Admissions%20Portal%20and%20need%20guidance%20regarding%20university%20admissions.%20Please%20assist%20me."
                 onClick={() => logAction('whatsapp_click')}
                 target="_blank"
                 rel="nofollow noopener noreferrer"

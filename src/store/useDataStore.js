@@ -24,7 +24,26 @@ export const useDataStore = create((set) => ({
       let unis = allStaticUniversities.map(staticUni => {
         const cloudUni = firestoreUnis.find(u => u.id === staticUni.id);
         if (cloudUni) {
-          return { ...staticUni, ...cloudUni };
+          // Deep merge meritData specifically
+          let mergedMeritData = { ...(staticUni.meritData || {}), ...(cloudUni.meritData || {}) };
+          if (staticUni.meritData?.campuses || cloudUni.meritData?.campuses) {
+            mergedMeritData.campuses = JSON.parse(JSON.stringify(staticUni.meritData?.campuses || {}));
+            const cloudCampuses = cloudUni.meritData?.campuses || {};
+            
+            Object.keys(cloudCampuses).forEach(campus => {
+              if (!mergedMeritData.campuses[campus]) {
+                mergedMeritData.campuses[campus] = cloudCampuses[campus];
+              } else {
+                Object.keys(cloudCampuses[campus]).forEach(prog => {
+                  mergedMeritData.campuses[campus][prog] = {
+                    ...(mergedMeritData.campuses[campus][prog] || {}),
+                    ...cloudCampuses[campus][prog]
+                  };
+                });
+              }
+            });
+          }
+          return { ...staticUni, ...cloudUni, meritData: mergedMeritData };
         }
         return staticUni;
       });
